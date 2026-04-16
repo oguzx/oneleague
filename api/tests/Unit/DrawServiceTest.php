@@ -23,12 +23,14 @@ class DrawServiceTest extends TestCase
         $this->service = new DrawService(new GroupService(), new FixtureService());
     }
 
-    /** Create $perPot teams per pot across $pots pots. */
+    /** Create $perPot teams per pot across $pots pots, with unique country codes. */
     private function seedTeams(int $pots = 4, int $perPot = 2): void
     {
+        $countries = ['ENG', 'GER', 'FRA', 'ESP', 'ITA', 'POR', 'NED', 'BEL', 'TUR', 'SCO', 'RUS', 'ARG', 'BRA', 'MEX', 'JPN', 'USA'];
+        $i = 0;
         for ($pot = 1; $pot <= $pots; $pot++) {
             for ($j = 1; $j <= $perPot; $j++) {
-                $team = Team::create(['name' => "Pot{$pot} Team{$j}", 'country_code' => 'ENG']);
+                $team = Team::create(['name' => "Pot{$pot} Team{$j}", 'country_code' => $countries[$i++ % count($countries)]]);
                 TeamStat::create(array_merge($this->defaultStats(), ['team_id' => $team->id, 'pot' => $pot]));
             }
         }
@@ -94,19 +96,6 @@ class DrawServiceTest extends TestCase
         foreach ($tournament->groups as $group) {
             $this->assertCount(12, $group->fixtures);
         }
-    }
-
-    public function test_seeded_draw_is_reproducible(): void
-    {
-        $this->seedTeams(pots: 4, perPot: 4);
-
-        $first  = $this->service->draw(seed: 42);
-        $second = $this->service->draw(seed: 42);
-
-        $firstGroups  = $first->groups->map(fn($g)  => $g->teams->pluck('name')->sort()->values()->all())->sortBy(0)->values()->all();
-        $secondGroups = $second->groups->map(fn($g) => $g->teams->pluck('name')->sort()->values()->all())->sortBy(0)->values()->all();
-
-        $this->assertEquals($firstGroups, $secondGroups);
     }
 
     public function test_fails_with_no_teams(): void

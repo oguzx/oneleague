@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class DrawTournamentCommand extends Command
 {
-    protected $signature = 'tournament:draw {--seed= : Optional integer seed for a reproducible draw}';
+    protected $signature = 'tournament:draw';
     protected $description = 'Run a tournament draw and generate group-stage fixtures';
 
     public function __construct(private readonly DrawService $drawService)
@@ -18,19 +18,14 @@ class DrawTournamentCommand extends Command
 
     public function handle(): int
     {
-        $seed = $this->option('seed') !== null ? (int) $this->option('seed') : null;
-
         try {
-            $tournament = $this->drawService->draw($seed);
+            $tournament = $this->drawService->draw();
         } catch (InvalidTournamentStateException $e) {
             $this->error($e->getMessage());
             return self::FAILURE;
         }
 
         $this->info("Tournament draw complete. ID: {$tournament->id}");
-        if ($seed !== null) {
-            $this->line("Seed used: {$seed}");
-        }
 
         foreach ($tournament->groups as $group) {
             $teams = $group->teams->pluck('name')->join(', ');

@@ -27,9 +27,11 @@ class DrawControllerTest extends TestCase
 
     private function seedTeams(int $pots = 4, int $perPot = 2): void
     {
+        $countries = ['ENG', 'GER', 'FRA', 'ESP', 'ITA', 'POR', 'NED', 'BEL', 'TUR', 'SCO', 'RUS', 'ARG', 'BRA', 'MEX', 'JPN', 'USA'];
+        $i = 0;
         for ($pot = 1; $pot <= $pots; $pot++) {
             for ($j = 1; $j <= $perPot; $j++) {
-                $team = Team::create(['name' => "Pot{$pot} Team{$j}", 'country_code' => 'ENG']);
+                $team = Team::create(['name' => "Pot{$pot} Team{$j}", 'country_code' => $countries[$i++ % count($countries)]]);
                 TeamStat::create(array_merge($this->defaultStats(), ['team_id' => $team->id, 'pot' => $pot]));
             }
         }
@@ -44,19 +46,8 @@ class DrawControllerTest extends TestCase
         $response->assertStatus(201)
                  ->assertJsonStructure([
                      'tournament_id',
-                     'seed',
                      'groups' => [['name', 'teams', 'fixtures']],
                  ]);
-    }
-
-    public function test_draw_with_seed_returns_seed_in_response(): void
-    {
-        $this->seedTeams();
-
-        $response = $this->postJson('/api/tournament/draw', ['seed' => 99]);
-
-        $response->assertStatus(201)
-                 ->assertJsonPath('seed', 99);
     }
 
     public function test_draw_without_teams_returns_422(): void
@@ -65,13 +56,6 @@ class DrawControllerTest extends TestCase
 
         $response->assertStatus(422)
                  ->assertJsonStructure(['message']);
-    }
-
-    public function test_invalid_seed_type_fails_validation(): void
-    {
-        $response = $this->postJson('/api/tournament/draw', ['seed' => 'not-a-number']);
-
-        $response->assertStatus(422);
     }
 
     public function test_groups_count_matches_teams_per_pot(): void

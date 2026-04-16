@@ -2,7 +2,7 @@
     {
         "name": "Manchester City",
         "color": "#6CABDD",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Manchester_City_FC_badge.svg",
         "attack": 94,
         "midfield": 95,
         "defense": 91,
@@ -34,7 +34,7 @@
     {
         "name": "Sevilla",
         "color": "#D00027",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/3/3b/Sevilla_FC_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Sevilla_FC_logo.svg",
         "attack": 82,
         "midfield": 82,
         "defense": 80,
@@ -66,7 +66,7 @@
     {
         "name": "Barcelona",
         "color": "#A50044",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/FC_Barcelona_%28crest%29.svg",
         "attack": 89,
         "midfield": 90,
         "defense": 84,
@@ -98,7 +98,7 @@
     {
         "name": "Napoli",
         "color": "#008CDA",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Neapel.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/SSC_Neapel.svg",
         "attack": 87,
         "midfield": 85,
         "defense": 83,
@@ -130,7 +130,7 @@
     {
         "name": "Bayern Munich",
         "color": "#DC052D",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg",
         "attack": 92,
         "midfield": 90,
         "defense": 89,
@@ -162,7 +162,7 @@
     {
         "name": "Paris Saint-Germain",
         "color": "#004170",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Paris_Saint-Germain_F.C..svg",
         "attack": 90,
         "midfield": 87,
         "defense": 83,
@@ -194,7 +194,7 @@
     {
         "name": "Benfica",
         "color": "#E42518",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/SL_Benfica_logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 82,
@@ -226,7 +226,7 @@
     {
         "name": "Feyenoord",
         "color": "#E21A23",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/2/22/Feyenoord_logo_since_2009.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Feyenoord_logo_since_2009.svg",
         "attack": 82,
         "midfield": 82,
         "defense": 80,
@@ -258,7 +258,7 @@
     {
         "name": "Real Madrid",
         "color": "#FEBE10",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Real_Madrid_CF.svg",
         "attack": 92,
         "midfield": 91,
         "defense": 88,
@@ -290,7 +290,7 @@
     {
         "name": "Manchester United",
         "color": "#DA291C",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Manchester_United_FC_crest.svg",
         "attack": 84,
         "midfield": 82,
         "defense": 81,
@@ -322,7 +322,7 @@
     {
         "name": "Inter",
         "color": "#00529F",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/FC_Internazionale_Milano_2021.svg",
         "attack": 87,
         "midfield": 86,
         "defense": 87,
@@ -354,7 +354,7 @@
     {
         "name": "Borussia Dortmund",
         "color": "#FDE100",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Borussia_Dortmund_logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 80,
@@ -386,7 +386,7 @@
     {
         "name": "Atletico Madrid",
         "color": "#C8102E",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Atletico_Madrid_Logo_2024.svg/250px-Atletico_Madrid_Logo_2024.svg.png",
         "attack": 84,
         "midfield": 84,
         "defense": 86,
@@ -418,7 +418,7 @@
     {
         "name": "RB Leipzig",
         "color": "#001A57",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/RB_Leipzig_2014_logo.svg",
         "attack": 84,
         "midfield": 83,
         "defense": 81,
@@ -450,7 +450,7 @@
     {
         "name": "Porto",
         "color": "#00428C",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/FC_Porto.svg",
         "attack": 83,
         "midfield": 83,
         "defense": 82,
@@ -482,7 +482,7 @@
     {
         "name": "Arsenal",
         "color": "#EF0107",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Arsenal_FC.svg",
         "attack": 88,
         "midfield": 87,
         "defense": 86,
@@ -514,7 +514,7 @@
     {
         "name": "Shakhtar Donetsk",
         "color": "#FF7A00",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/0/01/FC_Shakhtar_Donetsk.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/FC_Shakhtar_Donetsk.svg",
         "attack": 78,
         "midfield": 79,
         "defense": 76,
@@ -546,7 +546,7 @@
     {
         "name": "Red Bull Salzburg",
         "color": "#D50032",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/7/77/FC_Red_Bull_Salzburg_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/FC_Red_Bull_Salzburg_logo.svg",
         "attack": 77,
         "midfield": 78,
         "defense": 76,
@@ -578,7 +578,7 @@
     {
         "name": "Milan",
         "color": "#FB090B",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/AC_Milan.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/AC_Milan.svg",
         "attack": 84,
         "midfield": 83,
         "defense": 83,
@@ -610,7 +610,7 @@
     {
         "name": "Braga",
         "color": "#C8102E",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/4f/SC_Braga_logo.svg",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/thumb/7/79/S.C._Braga_logo.svg/250px-S.C._Braga_logo.svg.png",
         "attack": 77,
         "midfield": 77,
         "defense": 74,
@@ -642,7 +642,7 @@
     {
         "name": "PSV Eindhoven",
         "color": "#E31E24",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/e/e1/PSV_Eindhoven.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/PSV_Eindhoven.svg",
         "attack": 81,
         "midfield": 81,
         "defense": 77,
@@ -674,7 +674,7 @@
     {
         "name": "Lazio",
         "color": "#9BD2F5",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/S.S._Lazio_badge.svg",
         "attack": 80,
         "midfield": 81,
         "defense": 80,
@@ -704,9 +704,9 @@
         "country_code": "ITA"
     },
     {
-        "name": "Crvena Zvezda",
+        "name": "Fenerbahçe",
         "color": "#D71920",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f4/FK_Crvena_zvezda.svg",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/thumb/3/39/Fenerbah%C3%A7e.svg/250px-Fenerbah%C3%A7e.svg.png",
         "attack": 75,
         "midfield": 75,
         "defense": 73,
@@ -733,12 +733,12 @@
         "fatigue_resistance": 77,
         "big_match_performance": 76,
         "resilience": 79,
-        "country_code": "SRB"
+        "country_code": "TUR"
     },
     {
         "name": "Copenhagen",
         "color": "#003B73",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/46/FC_Copenhagen_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/FC_Copenhagen_logo.svg",
         "attack": 74,
         "midfield": 75,
         "defense": 74,
@@ -770,7 +770,7 @@
     {
         "name": "Young Boys",
         "color": "#FFD200",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/9/91/BSC_Young_Boys_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/BSC_Young_Boys_logo.svg",
         "attack": 73,
         "midfield": 73,
         "defense": 72,
@@ -802,7 +802,7 @@
     {
         "name": "Real Sociedad",
         "color": "#005BAC",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Real_Sociedad_logo.svg",
         "attack": 82,
         "midfield": 83,
         "defense": 82,
@@ -834,7 +834,7 @@
     {
         "name": "Galatasaray",
         "color": "#A32638",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Galatasaray_Sports_Club_Logo.svg",
+        "logo_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Galatasaray_Sports_Club_Logo.svg",
         "attack": 78,
         "midfield": 78,
         "defense": 75,
@@ -866,7 +866,7 @@
     {
         "name": "Celtic",
         "color": "#018749",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/3/35/Celtic_FC.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Celtic_FC.svg",
         "attack": 75,
         "midfield": 76,
         "defense": 73,
@@ -898,7 +898,7 @@
     {
         "name": "Newcastle United",
         "color": "#241F20",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/Newcastle_United_Logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 82,
@@ -930,7 +930,7 @@
     {
         "name": "Union Berlin",
         "color": "#E30613",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/44/1._FC_Union_Berlin_logo.svg",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/1._FC_Union_Berlin_Logo.svg/500px-1._FC_Union_Berlin_Logo.svg.png",
         "attack": 76,
         "midfield": 76,
         "defense": 78,
@@ -962,7 +962,7 @@
     {
         "name": "Antwerp",
         "color": "#D71920",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/8/8a/Royal_Antwerp_FC_logo.svg",
+        "logo_url": "//upload.wikimedia.org/wikipedia/en/thumb/0/0b/Royal_Antwerp_Football_Club_logo.svg/250px-Royal_Antwerp_Football_Club_logo.svg.png",
         "attack": 73,
         "midfield": 73,
         "defense": 71,
@@ -994,7 +994,7 @@
     {
         "name": "Lens",
         "color": "#FDDD00",
-        "logo_url": "https://upload.wikimedia.org/wikipedia/en/8/8a/RC_Lens_logo.svg",
+        "logo_url": "https://en.wikipedia.org/wiki/Special:FilePath/RC_Lens_logo.svg",
         "attack": 79,
         "midfield": 79,
         "defense": 80,

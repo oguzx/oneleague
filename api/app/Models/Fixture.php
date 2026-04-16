@@ -6,6 +6,7 @@ use App\Enums\FixtureStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Fixture extends Model
 {
@@ -38,5 +39,15 @@ class Fixture extends Model
     public function awayTeam(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'away_team_id');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(MatchEvent::class)->orderBy('tick_number')->orderBy('sequence');
+    }
+
+    public function isPlayable(): bool
+    {
+        return $this->status === FixtureStatus::Scheduled;
     }
 }

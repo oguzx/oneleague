@@ -13,42 +13,150 @@ class DrawService
     private const TEAMS_PER_GROUP = 4;
 
     public function __construct(
-        private readonly GroupService   $groupService,
+        private readonly GroupService $groupService,
         private readonly FixtureService $fixtureService,
     ) {}
 
-    /**
-     * Run a full tournament draw:
-     * validate → shuffle pots → create groups → assign teams → generate fixtures.
-     * The entire operation is wrapped in a single database transaction.
-     *
-     * @throws InvalidTournamentStateException
-     */
     public function draw(): Tournament
     {
         $teams = Team::with('stat')->get();
 
-        $pots = self::validateAndGroup($teams);
+        $pots = $this->buildValidatedPots($teams);
+        $shuffledPots = $this->shufflePots($pots);
 
-        $shuffledPots = $pots->map(function (Collection $pot): array {
-            $arr = $pot->values()->all();
-            shuffle($arr);
-            return $arr;
+        $groupAssignments = $this->buildGroupAssignments($shuffledPots);
+
+        return $this->persistTournament($groupAssignments);
+    }
+
+    private function buildValidatedPots(Collection $teams): Collection
+    {
+        $this->validateTeams($teams);
+
+        return $teams
+            ->groupBy(fn (Team $team) => $team->stat->pot)
+            ->sortKeys();
+    }
+
+    private function shufflePots(Collection $pots): Collection
+    {
+        return $pots->map(function (Collection $pot) {
+            $teams = $pot->values()->all();
+            shuffle($teams);
+            return $teams;
         });
+    }
 
-        $groupCount = count($shuffledPots->first());
+    private function buildGroupAssignments(Collection $pots): array
+    {
+        $groupCount = count($pots->first());
 
-        return DB::transaction(function () use ($shuffledPots, $groupCount): Tournament {
-            $tournament = Tournament::create(['name' => 'Champions League']);
+        $groupCountries = array_fill(0, $groupCount, []);
+        $groupTeams     = array_fill(0, $groupCount, []);
 
-            for ($i = 0; $i < $groupCount; $i++) {
-                $groupName = chr(65 + $i); // A, B, C, …
+        foreach ($pots as $potTeams) {
+            $assigned = $this->assignPot($potTeams, $groupCountries);
+
+            foreach ($assigned as $groupIndex => $team) {
+                $groupTeams[$groupIndex][] = $team->id;
+            }
+        }
+
+        return $groupTeams;
+    }
+
+    private function assignPot(array $teams, array &$groupCountries): array
+    {
+        $assignment = array_fill(0, count($teams), null);
+
+        if (! $this->backtrackAssign($teams, 0, $assignment, $groupCountries)) {
+            throw new InvalidTournamentStateException(
+                'Draw failed: country constraint cannot be satisfied.'
+            );
+        }
+
+        return $assignment;
+    }
+
+    private function backtrackAssign(
+        array $teams,
+        int $index,
+        array &$assignment,
+        array &$groupCountries,
+    ): bool {
+        if ($index === count($teams)) {
+            return true;
+        }
+
+        $team = $teams[$index];
+        $groupIndexes = range(0, count($teams) - 1);
+
+        shuffle($groupIndexes);
+
+        foreach ($groupIndexes as $groupIndex) {
+            if (! $this->canPlaceTeam($team, $groupIndex, $assignment, $groupCountries)) {
+                continue;
+            }
+
+            $this->placeTeam($team, $groupIndex, $assignment, $groupCountries);
+
+            if ($this->backtrackAssign($teams, $index + 1, $assignment, $groupCountries)) {
+                return true;
+            }
+
+            $this->removeTeam($groupIndex, $assignment, $groupCountries);
+        }
+
+        return false;
+    }
+
+    private function canPlaceTeam(
+        Team $team,
+        int $groupIndex,
+        array $assignment,
+        array $groupCountries
+    ): bool {
+        if ($assignment[$groupIndex] !== null) {
+            return false;
+        }
+
+        return ! in_array($team->country_code, $groupCountries[$groupIndex], true);
+    }
+
+    private function placeTeam(
+        Team $team,
+        int $groupIndex,
+        array &$assignment,
+        array &$groupCountries
+    ): void {
+        $assignment[$groupIndex] = $team;
+        $groupCountries[$groupIndex][] = $team->country_code;
+    }
+
+    private function removeTeam(
+        int $groupIndex,
+        array &$assignment,
+        array &$groupCountries
+    ): void {
+        $assignment[$groupIndex] = null;
+        array_pop($groupCountries[$groupIndex]);
+    }
+
+    private function persistTournament(array $groupTeams): Tournament
+    {
+        return DB::transaction(function () use ($groupTeams) {
+            $tournament = Tournament::create([
+                'name' => 'Champions League',
+            ]);
+
+            foreach ($groupTeams as $index => $teamIds) {
+                $groupName = chr(65 + $index);
+
                 $group = $this->groupService->createGroup($tournament, $groupName);
 
-                $teamIds = $shuffledPots->map(fn(array $pot) => $pot[$i]->id)->all();
                 $group->teams()->attach($teamIds);
-
                 $group->load('teams');
+
                 $this->fixtureService->generateForGroup($group);
             }
 
@@ -56,49 +164,45 @@ class DrawService
         });
     }
 
-    /**
-     * Validate the team set and return teams grouped by pot (sorted by pot number).
-     *
-     * Rules enforced:
-     * - All teams must have a stat record.
-     * - Pots must be numbered 1..N consecutively with no gaps.
-     * - Every pot must contain the same number of teams.
-     * - Pot count must equal TEAMS_PER_GROUP (4) so each group gets one team per pot.
-     *
-     * @throws InvalidTournamentStateException
-     */
-    private static function validateAndGroup(Collection $teams): Collection
+    private function validateTeams(Collection $teams): void
     {
         if ($teams->isEmpty()) {
-            throw new InvalidTournamentStateException('No teams found in the database.');
+            throw new InvalidTournamentStateException('No teams found.');
         }
 
-        $missing = $teams->filter(fn(Team $t) => $t->stat === null);
-        if ($missing->isNotEmpty()) {
-            $names = $missing->pluck('name')->join(', ');
-            throw new InvalidTournamentStateException("Teams missing stat records: {$names}.");
+        $missingStats = $teams->filter(fn (Team $t) => $t->stat === null);
+
+        if ($missingStats->isNotEmpty()) {
+            $names = $missingStats->pluck('name')->join(', ');
+            throw new InvalidTournamentStateException("Teams missing stats: {$names}");
         }
 
-        $pots = $teams->groupBy(fn(Team $t) => $t->stat->pot)->sortKeys();
+        $pots = $teams->groupBy(fn (Team $t) => $t->stat->pot);
 
         if ($pots->count() !== self::TEAMS_PER_GROUP) {
-            throw new InvalidTournamentStateException(
-                sprintf(
-                    'Exactly %d pots are required (one per team per group). Found %d.',
-                    self::TEAMS_PER_GROUP,
-                    $pots->count()
-                )
-            );
+            throw new InvalidTournamentStateException('Exactly 4 pots are required.');
         }
 
-        $sizes = $pots->map(fn(Collection $p) => $p->count())->unique();
+        $this->validatePotSizes($pots);
+        $this->validatePotSequence($pots);
+    }
+
+    private function validatePotSizes(Collection $pots): void
+    {
+        $sizes = $pots->map(fn (Collection $pot) => $pot->count())->unique();
+
         if ($sizes->count() > 1) {
-            $breakdown = $pots->map(fn(Collection $p, int $k) => "Pot {$k}: {$p->count()}")->join(', ');
-            throw new InvalidTournamentStateException(
-                "All pots must have equal team counts. Found: {$breakdown}."
-            );
+            throw new InvalidTournamentStateException('All pots must have equal team counts.');
         }
+    }
 
-        return $pots;
+    private function validatePotSequence(Collection $pots): void
+    {
+        $potNumbers = $pots->keys()->map(fn ($k) => (int) $k)->sort()->values();
+        $expected = range(1, self::TEAMS_PER_GROUP);
+
+        if ($potNumbers->all() !== $expected) {
+            throw new InvalidTournamentStateException('Pot numbers must be consecutive.');
+        }
     }
 }
