@@ -8,24 +8,6 @@ use Illuminate\Database\Seeder;
 
 class TeamSeeder extends Seeder
 {
-    private const COUNTRY_CODES = [
-        'England'     => 'ENG',
-        'Spain'       => 'ESP',
-        'Germany'     => 'DEU',
-        'France'      => 'FRA',
-        'Portugal'    => 'PRT',
-        'Italy'       => 'ITA',
-        'Netherlands' => 'NLD',
-        'Ukraine'     => 'UKR',
-        'Austria'     => 'AUT',
-        'Serbia'      => 'SRB',
-        'Denmark'     => 'DNK',
-        'Switzerland' => 'CHE',
-        'Turkey'      => 'TUR',
-        'Scotland'    => 'SCO',
-        'Belgium'     => 'BEL',
-    ];
-
     public function run(): void
     {
         $teams = json_decode(
@@ -37,7 +19,8 @@ class TeamSeeder extends Seeder
             $team = Team::create([
                 'name'         => $data['name'],
                 'color'        => $data['color'],
-                'country_code' => self::COUNTRY_CODES[$data['country']] ?? null,
+                'country_code' => $data['country_code'],
+                'logo_url'         => $data['logo_url'],
             ]);
 
             TeamStat::create([

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 100)->unique();
             $table->string('color', 7)->nullable();
-            $table->string('logo')->nullable();
+            $table->string('logo_url')->nullable();
             $table->string('country_code', 3)->nullable();
             $table->timestamps();
         });

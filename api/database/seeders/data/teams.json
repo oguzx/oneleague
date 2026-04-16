@@ -2,7 +2,7 @@
     {
         "name": "Manchester City",
         "color": "#6CABDD",
-        "country": "England",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
         "attack": 94,
         "midfield": 95,
         "defense": 91,
@@ -28,12 +28,13 @@
         "discipline": 87,
         "fatigue_resistance": 91,
         "big_match_performance": 94,
-        "resilience": 90
+        "resilience": 90,
+        "country_code": "ENG"
     },
     {
         "name": "Sevilla",
         "color": "#D00027",
-        "country": "Spain",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/3/3b/Sevilla_FC_logo.svg",
         "attack": 82,
         "midfield": 82,
         "defense": 80,
@@ -59,12 +60,13 @@
         "discipline": 80,
         "fatigue_resistance": 78,
         "big_match_performance": 83,
-        "resilience": 81
+        "resilience": 81,
+        "country_code": "ESP"
     },
     {
         "name": "Barcelona",
         "color": "#A50044",
-        "country": "Spain",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
         "attack": 89,
         "midfield": 90,
         "defense": 84,
@@ -90,12 +92,13 @@
         "discipline": 83,
         "fatigue_resistance": 84,
         "big_match_performance": 87,
-        "resilience": 84
+        "resilience": 84,
+        "country_code": "ESP"
     },
     {
         "name": "Napoli",
         "color": "#008CDA",
-        "country": "Italy",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Neapel.svg",
         "attack": 87,
         "midfield": 85,
         "defense": 83,
@@ -121,12 +124,13 @@
         "discipline": 82,
         "fatigue_resistance": 83,
         "big_match_performance": 84,
-        "resilience": 82
+        "resilience": 82,
+        "country_code": "ITA"
     },
     {
         "name": "Bayern Munich",
         "color": "#DC052D",
-        "country": "Germany",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg",
         "attack": 92,
         "midfield": 90,
         "defense": 89,
@@ -152,12 +156,13 @@
         "discipline": 84,
         "fatigue_resistance": 87,
         "big_match_performance": 91,
-        "resilience": 89
+        "resilience": 89,
+        "country_code": "GER"
     },
     {
         "name": "Paris Saint-Germain",
         "color": "#004170",
-        "country": "France",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
         "attack": 90,
         "midfield": 87,
         "defense": 83,
@@ -183,12 +188,13 @@
         "discipline": 79,
         "fatigue_resistance": 83,
         "big_match_performance": 85,
-        "resilience": 78
+        "resilience": 78,
+        "country_code": "FRA"
     },
     {
         "name": "Benfica",
         "color": "#E42518",
-        "country": "Portugal",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 82,
@@ -214,12 +220,13 @@
         "discipline": 83,
         "fatigue_resistance": 82,
         "big_match_performance": 83,
-        "resilience": 82
+        "resilience": 82,
+        "country_code": "POR"
     },
     {
         "name": "Feyenoord",
         "color": "#E21A23",
-        "country": "Netherlands",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/2/22/Feyenoord_logo_since_2009.svg",
         "attack": 82,
         "midfield": 82,
         "defense": 80,
@@ -245,13 +252,13 @@
         "discipline": 82,
         "fatigue_resistance": 80,
         "big_match_performance": 80,
-        "resilience": 81
+        "resilience": 81,
+        "country_code": "NED"
     },
-
     {
         "name": "Real Madrid",
         "color": "#FEBE10",
-        "country": "Spain",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
         "attack": 92,
         "midfield": 91,
         "defense": 88,
@@ -277,12 +284,13 @@
         "discipline": 85,
         "fatigue_resistance": 88,
         "big_match_performance": 95,
-        "resilience": 93
+        "resilience": 93,
+        "country_code": "ESP"
     },
     {
         "name": "Manchester United",
         "color": "#DA291C",
-        "country": "England",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
         "attack": 84,
         "midfield": 82,
         "defense": 81,
@@ -308,12 +316,13 @@
         "discipline": 78,
         "fatigue_resistance": 80,
         "big_match_performance": 82,
-        "resilience": 79
+        "resilience": 79,
+        "country_code": "ENG"
     },
     {
         "name": "Inter",
         "color": "#00529F",
-        "country": "Italy",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
         "attack": 87,
         "midfield": 86,
         "defense": 87,
@@ -339,12 +348,13 @@
         "discipline": 84,
         "fatigue_resistance": 85,
         "big_match_performance": 88,
-        "resilience": 87
+        "resilience": 87,
+        "country_code": "ITA"
     },
     {
         "name": "Borussia Dortmund",
         "color": "#FDE100",
-        "country": "Germany",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 80,
@@ -370,12 +380,13 @@
         "discipline": 81,
         "fatigue_resistance": 83,
         "big_match_performance": 84,
-        "resilience": 83
+        "resilience": 83,
+        "country_code": "GER"
     },
     {
         "name": "Atletico Madrid",
         "color": "#C8102E",
-        "country": "Spain",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg",
         "attack": 84,
         "midfield": 84,
         "defense": 86,
@@ -401,12 +412,13 @@
         "discipline": 84,
         "fatigue_resistance": 84,
         "big_match_performance": 88,
-        "resilience": 88
+        "resilience": 88,
+        "country_code": "ESP"
     },
     {
         "name": "RB Leipzig",
         "color": "#001A57",
-        "country": "Germany",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg",
         "attack": 84,
         "midfield": 83,
         "defense": 81,
@@ -432,12 +444,13 @@
         "discipline": 80,
         "fatigue_resistance": 84,
         "big_match_performance": 82,
-        "resilience": 81
+        "resilience": 81,
+        "country_code": "GER"
     },
     {
         "name": "Porto",
         "color": "#00428C",
-        "country": "Portugal",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg",
         "attack": 83,
         "midfield": 83,
         "defense": 82,
@@ -463,12 +476,13 @@
         "discipline": 84,
         "fatigue_resistance": 82,
         "big_match_performance": 83,
-        "resilience": 83
+        "resilience": 83,
+        "country_code": "POR"
     },
     {
         "name": "Arsenal",
         "color": "#EF0107",
-        "country": "England",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
         "attack": 88,
         "midfield": 87,
         "defense": 86,
@@ -494,13 +508,13 @@
         "discipline": 84,
         "fatigue_resistance": 85,
         "big_match_performance": 84,
-        "resilience": 84
+        "resilience": 84,
+        "country_code": "ENG"
     },
-
     {
         "name": "Shakhtar Donetsk",
         "color": "#FF7A00",
-        "country": "Ukraine",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/0/01/FC_Shakhtar_Donetsk.svg",
         "attack": 78,
         "midfield": 79,
         "defense": 76,
@@ -526,12 +540,13 @@
         "discipline": 79,
         "fatigue_resistance": 79,
         "big_match_performance": 78,
-        "resilience": 80
+        "resilience": 80,
+        "country_code": "UKR"
     },
     {
         "name": "Red Bull Salzburg",
         "color": "#D50032",
-        "country": "Austria",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/7/77/FC_Red_Bull_Salzburg_logo.svg",
         "attack": 77,
         "midfield": 78,
         "defense": 76,
@@ -557,12 +572,13 @@
         "discipline": 78,
         "fatigue_resistance": 80,
         "big_match_performance": 76,
-        "resilience": 78
+        "resilience": 78,
+        "country_code": "AUT"
     },
     {
         "name": "Milan",
         "color": "#FB090B",
-        "country": "Italy",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/AC_Milan.svg",
         "attack": 84,
         "midfield": 83,
         "defense": 83,
@@ -588,12 +604,13 @@
         "discipline": 82,
         "fatigue_resistance": 82,
         "big_match_performance": 84,
-        "resilience": 83
+        "resilience": 83,
+        "country_code": "ITA"
     },
     {
         "name": "Braga",
         "color": "#C8102E",
-        "country": "Portugal",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/4f/SC_Braga_logo.svg",
         "attack": 77,
         "midfield": 77,
         "defense": 74,
@@ -619,12 +636,13 @@
         "discipline": 79,
         "fatigue_resistance": 77,
         "big_match_performance": 75,
-        "resilience": 76
+        "resilience": 76,
+        "country_code": "POR"
     },
     {
         "name": "PSV Eindhoven",
         "color": "#E31E24",
-        "country": "Netherlands",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/e/e1/PSV_Eindhoven.svg",
         "attack": 81,
         "midfield": 81,
         "defense": 77,
@@ -650,12 +668,13 @@
         "discipline": 81,
         "fatigue_resistance": 79,
         "big_match_performance": 79,
-        "resilience": 79
+        "resilience": 79,
+        "country_code": "NED"
     },
     {
         "name": "Lazio",
         "color": "#9BD2F5",
-        "country": "Italy",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg",
         "attack": 80,
         "midfield": 81,
         "defense": 80,
@@ -681,12 +700,13 @@
         "discipline": 82,
         "fatigue_resistance": 79,
         "big_match_performance": 80,
-        "resilience": 80
+        "resilience": 80,
+        "country_code": "ITA"
     },
     {
         "name": "Crvena Zvezda",
         "color": "#D71920",
-        "country": "Serbia",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f4/FK_Crvena_zvezda.svg",
         "attack": 75,
         "midfield": 75,
         "defense": 73,
@@ -712,12 +732,13 @@
         "discipline": 78,
         "fatigue_resistance": 77,
         "big_match_performance": 76,
-        "resilience": 79
+        "resilience": 79,
+        "country_code": "SRB"
     },
     {
         "name": "Copenhagen",
         "color": "#003B73",
-        "country": "Denmark",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/46/FC_Copenhagen_logo.svg",
         "attack": 74,
         "midfield": 75,
         "defense": 74,
@@ -743,13 +764,13 @@
         "discipline": 80,
         "fatigue_resistance": 78,
         "big_match_performance": 75,
-        "resilience": 78
+        "resilience": 78,
+        "country_code": "DEN"
     },
-
     {
         "name": "Young Boys",
         "color": "#FFD200",
-        "country": "Switzerland",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/9/91/BSC_Young_Boys_logo.svg",
         "attack": 73,
         "midfield": 73,
         "defense": 72,
@@ -775,12 +796,13 @@
         "discipline": 78,
         "fatigue_resistance": 76,
         "big_match_performance": 73,
-        "resilience": 75
+        "resilience": 75,
+        "country_code": "SUI"
     },
     {
         "name": "Real Sociedad",
         "color": "#005BAC",
-        "country": "Spain",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg",
         "attack": 82,
         "midfield": 83,
         "defense": 82,
@@ -806,12 +828,13 @@
         "discipline": 84,
         "fatigue_resistance": 81,
         "big_match_performance": 80,
-        "resilience": 81
+        "resilience": 81,
+        "country_code": "ESP"
     },
     {
         "name": "Galatasaray",
         "color": "#A32638",
-        "country": "Turkey",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Galatasaray_Sports_Club_Logo.svg",
         "attack": 78,
         "midfield": 78,
         "defense": 75,
@@ -837,12 +860,13 @@
         "discipline": 78,
         "fatigue_resistance": 79,
         "big_match_performance": 80,
-        "resilience": 82
+        "resilience": 82,
+        "country_code": "TUR"
     },
     {
         "name": "Celtic",
         "color": "#018749",
-        "country": "Scotland",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/3/35/Celtic_FC.svg",
         "attack": 75,
         "midfield": 76,
         "defense": 73,
@@ -868,12 +892,13 @@
         "discipline": 79,
         "fatigue_resistance": 77,
         "big_match_performance": 76,
-        "resilience": 79
+        "resilience": 79,
+        "country_code": "SCO"
     },
     {
         "name": "Newcastle United",
         "color": "#241F20",
-        "country": "England",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg",
         "attack": 85,
         "midfield": 84,
         "defense": 82,
@@ -899,12 +924,13 @@
         "discipline": 79,
         "fatigue_resistance": 83,
         "big_match_performance": 82,
-        "resilience": 82
+        "resilience": 82,
+        "country_code": "ENG"
     },
     {
         "name": "Union Berlin",
         "color": "#E30613",
-        "country": "Germany",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/4/44/1._FC_Union_Berlin_logo.svg",
         "attack": 76,
         "midfield": 76,
         "defense": 78,
@@ -930,12 +956,13 @@
         "discipline": 81,
         "fatigue_resistance": 78,
         "big_match_performance": 77,
-        "resilience": 80
+        "resilience": 80,
+        "country_code": "GER"
     },
     {
         "name": "Antwerp",
         "color": "#D71920",
-        "country": "Belgium",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/8/8a/Royal_Antwerp_FC_logo.svg",
         "attack": 73,
         "midfield": 73,
         "defense": 71,
@@ -961,12 +988,13 @@
         "discipline": 77,
         "fatigue_resistance": 75,
         "big_match_performance": 72,
-        "resilience": 74
+        "resilience": 74,
+        "country_code": "BEL"
     },
     {
         "name": "Lens",
         "color": "#FDDD00",
-        "country": "France",
+        "logo_url": "https://upload.wikimedia.org/wikipedia/en/8/8a/RC_Lens_logo.svg",
         "attack": 79,
         "midfield": 79,
         "defense": 80,
@@ -992,6 +1020,7 @@
         "discipline": 82,
         "fatigue_resistance": 79,
         "big_match_performance": 79,
-        "resilience": 80
+        "resilience": 80,
+        "country_code": "FRA"
     }
 ]
