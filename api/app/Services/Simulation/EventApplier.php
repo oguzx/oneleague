@@ -140,9 +140,9 @@ class EventApplier
         TeamStrengthProfileData $keeper,
         PitchZone $zone,
     ): MatchEventType {
-        $goalProb    = $attacker->finishing * (1.0 - $keeper->goalkeeper * 0.70) * $zone->shotConversionModifier();
-        $savedProb   = $keeper->goalkeeper * 0.45;
-        $blockedProb = $keeper->defense    * 0.20;
+        $goalProb    = $attacker->finishing * (1.0 - $keeper->goalkeeper * 0.55) * $zone->shotConversionModifier();
+        $savedProb   = $keeper->goalkeeper * 0.38;
+        $blockedProb = $keeper->defense    * 0.18;
 
         $roll = mt_rand(0, 1_000_000) / 1_000_000.0;
 
@@ -183,6 +183,8 @@ class EventApplier
         $rate = $state->currentHalf() === 1
             ? MatchConstants::FATIGUE_RATE_FIRST_HALF
             : MatchConstants::FATIGUE_RATE_SECOND_HALF;
+
+        $rate *= $context->fatigueFactor;
 
         $state->setHomeFatigue(min(1.0,
             $state->homeFatigue() + $rate * (1.0 - $context->homeProfile->fatigueResistance * 0.5)

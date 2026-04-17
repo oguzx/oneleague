@@ -8,6 +8,7 @@ use App\Data\TeamStrengthProfileData;
 use App\Enums\MatchEventType;
 use App\Enums\MatchPhase;
 use App\Enums\PitchZone;
+use App\Enums\WeatherCondition;
 use App\Services\Simulation\EventBaseWeightResolver;
 use App\Services\Simulation\EventCandidateResolver;
 use App\Services\Simulation\EventProbabilityResolver;
@@ -170,6 +171,8 @@ class EventProbabilityResolverTest extends TestCase
             refStrictnessFactor:           0.6,
             expectedHomeAttackingPressure: 0.7,
             expectedAwayAttackingPressure: 0.65,
+            weather:                       WeatherCondition::Clear,
+            fatigueFactor:                 1.0,
         );
     }
 }

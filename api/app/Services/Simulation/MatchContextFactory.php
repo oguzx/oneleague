@@ -4,6 +4,7 @@ namespace App\Services\Simulation;
 
 use App\Data\MatchContextData;
 use App\Data\TeamStrengthProfileData;
+use App\Enums\WeatherCondition;
 use App\Models\Fixture;
 use App\Models\TeamStat;
 
@@ -32,6 +33,8 @@ class MatchContextFactory
         $homeProfile = $this->buildProfile($fixture->home_team_id, $homeStat);
         $awayProfile = $this->buildProfile($fixture->away_team_id, $awayStat);
 
+        $weather = $this->randomWeather();
+
         return new MatchContextData(
             fixtureId:                       $fixture->id,
             homeTeamId:                      $fixture->home_team_id,
@@ -43,6 +46,8 @@ class MatchContextFactory
             refStrictnessFactor:             $this->refStrictnessFactor($homeStat, $awayStat),
             expectedHomeAttackingPressure:   $this->attackingPressure($homeProfile, $awayProfile),
             expectedAwayAttackingPressure:   $this->attackingPressure($awayProfile, $homeProfile),
+            weather:                         $weather,
+            fatigueFactor:                   $weather->fatigueFactor(),
         );
     }
 
@@ -76,6 +81,12 @@ class MatchContextFactory
         // Lower average discipline → stricter referee → more fouls awarded
         $avgDiscipline = ($home->discipline + $away->discipline) / self::DISCIPLINE_DIVISOR;
         return 1.0 - ($avgDiscipline * self::DISCIPLINE_STRICTNESS_WEIGHT);
+    }
+
+    private function randomWeather(): WeatherCondition
+    {
+        $cases = WeatherCondition::cases();
+        return $cases[array_rand($cases)];
     }
 
     private function attackingPressure(

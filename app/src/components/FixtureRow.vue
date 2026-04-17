@@ -29,6 +29,15 @@ watch(() => props.scoreEditMode, (val) => {
 
 const completed = props.fixture.status === 'completed'
 
+const weatherIcon = {
+  clear: '☀️',
+  rain:  '🌧️',
+  snow:  '❄️',
+  heat:  '🌡️',
+  windy: '💨',
+  foggy: '🌫️',
+}
+
 function toggle() {
   if (editing.value) return
   if (props.fixture.events?.length) open.value = !open.value
@@ -94,6 +103,9 @@ async function saveEdit() {
     <!-- Normal fixture header -->
     <div v-else class="fixture-header" @click="toggle">
 
+      <!-- Left gutter (mirrors right-side actions for centering) -->
+      <div class="fixture-gutter" />
+
       <!-- Home team -->
       <div class="fixture-team fixture-home">
         <span class="team-name">{{ fixture.home.name }}</span>
@@ -131,22 +143,33 @@ async function saveEdit() {
       <!-- Edit icon (score edit mode, completed only) -->
       <button
         v-if="scoreEditMode && completed"
-        class="fixture-edit-btn"
+        class="fixture-edit-btn fixture-gutter"
         title="Edit score"
         @click.stop="openEdit"
       >✏️</button>
 
       <!-- Manual edited badge / expand toggle -->
       <template v-else-if="completed">
-        <span v-if="fixture.is_manually_edited" class="manual-edited-badge">Manual Edited</span>
-        <div v-else-if="fixture.events?.length" class="fixture-toggle">
+        <span v-if="fixture.is_manually_edited" class="manual-edited-badge fixture-gutter">✎</span>
+        <div v-else-if="fixture.events?.length" class="fixture-toggle fixture-gutter">
           {{ open ? '▲' : '▼' }}
         </div>
+        <div v-else class="fixture-gutter" />
       </template>
 
-      <div v-else-if="fixture.events?.length" class="fixture-toggle">
+      <div v-else-if="fixture.events?.length" class="fixture-toggle fixture-gutter">
         {{ open ? '▲' : '▼' }}
       </div>
+      <div v-else class="fixture-gutter" />
+    </div>
+
+    <!-- Weather meta line — shown only for completed, non-manually-edited fixtures -->
+    <div
+      v-if="completed && !fixture.is_manually_edited && fixture.weather"
+      class="fixture-weather"
+    >
+      <span>{{ weatherIcon[fixture.weather] ?? '' }}</span>
+      <span>{{ fixture.weather }}</span>
     </div>
 
     <EventTimeline

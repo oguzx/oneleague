@@ -47,13 +47,14 @@ class SimulateMatchAction
         $timeline = array_merge($timeline, $fullTime);
 
         return new SimulationResultData(
-            fixtureId:   $context->fixtureId,
-            homeTeamId:  $context->homeTeamId,
-            awayTeamId:  $context->awayTeamId,
-            homeScore:   $state->homeScore(),
-            awayScore:   $state->awayScore(),
+            fixtureId:  $context->fixtureId,
+            homeTeamId: $context->homeTeamId,
+            awayTeamId: $context->awayTeamId,
+            homeScore:  $state->homeScore(),
+            awayScore:  $state->awayScore(),
             events:     $timeline,
             finalState: $state,
+            weather:    $context->weather,
         );
     }
 

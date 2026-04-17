@@ -69,6 +69,7 @@ class PlayMatchAction
         $fixture->update([
             'home_score' => $result->homeScore,
             'away_score' => $result->awayScore,
+            'weather'    => $result->weather->value,
         ]);
 
         $fixture->transitionTo(FixtureStatus::Completed);

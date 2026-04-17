@@ -91,6 +91,7 @@ class TournamentFormatter
                 'logo_url'     => $fixture->awayTeam->logo_url,
             ],
             'status'             => $fixture->status->value,
+            'weather'            => $fixture->weather?->value,
             'is_manually_edited' => $fixture->is_manually_edited,
             'score'  => $completed
                 ? ['home' => $fixture->home_score, 'away' => $fixture->away_score]

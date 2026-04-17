@@ -11,9 +11,6 @@ up:
 		sleep 2; \
 	done
 
-	@echo "Running composer update..."
-	docker compose exec api composer update
-
 	@echo "Running migrations..."
 	docker compose exec api php artisan migrate:fresh --seed
 

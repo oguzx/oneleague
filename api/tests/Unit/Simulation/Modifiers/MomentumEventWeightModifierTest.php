@@ -9,6 +9,7 @@ use App\Data\TeamStrengthProfileData;
 use App\Enums\MatchEventType;
 use App\Enums\MatchPhase;
 use App\Enums\PitchZone;
+use App\Enums\WeatherCondition;
 use App\Services\Simulation\MatchConstants;
 use App\Services\Simulation\Modifiers\MomentumEventWeightModifier;
 use Tests\TestCase;
@@ -122,6 +123,7 @@ class MomentumEventWeightModifierTest extends TestCase
             homeProfile: $profile('home-id'), awayProfile: $profile('away-id'),
             homeAdvantageFactor: 0.7, tempoFactor: 0.8, refStrictnessFactor: 0.6,
             expectedHomeAttackingPressure: 0.7, expectedAwayAttackingPressure: 0.6,
+            weather: WeatherCondition::Clear, fatigueFactor: 1.0,
         );
     }
 }

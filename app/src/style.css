@@ -214,9 +214,16 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 .score-sep { color: var(--muted); font-size: 12px; }
 .score-vs  { font-size: 10px; color: var(--muted); }
 
+.fixture-weather {
+  display: flex; justify-content: center; align-items: center; gap: 3px;
+  font-size: 10px; color: var(--muted);
+  padding: 2px 0 4px; text-transform: capitalize; letter-spacing: 0.02em;
+}
+
 .fixture-row--completed .score-num { color: var(--accent); }
 
-.fixture-toggle { font-size: 9px; color: var(--muted); width: 12px; text-align: center; flex-shrink: 0; }
+.fixture-gutter { width: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.fixture-toggle { font-size: 9px; color: var(--muted); text-align: center; }
 
 /* Edit icon button (score edit mode) */
 .fixture-edit-btn {

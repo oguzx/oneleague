@@ -2,6 +2,8 @@
 
 namespace App\Data;
 
+use App\Enums\WeatherCondition;
+
 /** Pre-match context computed once before simulation starts. Immutable. */
 readonly class MatchContextData
 {
@@ -16,5 +18,7 @@ readonly class MatchContextData
         public float                   $refStrictnessFactor,        // 0–1, higher = more fouls called
         public float                   $expectedHomeAttackingPressure,
         public float                   $expectedAwayAttackingPressure,
+        public WeatherCondition        $weather,                    // randomly set once per match
+        public float                   $fatigueFactor,              // 1.0 default; >1.0 for heat/snow
     ) {}
 }

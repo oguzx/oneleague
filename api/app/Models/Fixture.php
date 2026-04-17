@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FixtureStatus;
+use App\Enums\WeatherCondition;
 use App\Exceptions\InvalidTournamentStateException;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null        $away_score
  * @property bool            $is_manually_edited
  * @property \Carbon\Carbon|null $manually_edited_at
+ * @property \App\Enums\WeatherCondition|null $weather
  * @property \Carbon\Carbon  $created_at
  * @property \Carbon\Carbon  $updated_at
  *
@@ -42,10 +44,12 @@ class Fixture extends Model
         'away_score',
         'is_manually_edited',
         'manually_edited_at',
+        'weather',
     ];
 
     protected $casts = [
         'status'             => FixtureStatus::class,
+        'weather'            => WeatherCondition::class,
         'is_manually_edited' => 'boolean',
         'manually_edited_at' => 'datetime',
     ];

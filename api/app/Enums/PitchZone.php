@@ -13,9 +13,9 @@ enum PitchZone: string
     public function shotConversionModifier(): float
     {
         return match($this) {
-            self::PenaltyArea    => 0.26,
-            self::AttackingThird => 0.12,
-            self::MiddleThird    => 0.04,
+            self::PenaltyArea    => 0.36,
+            self::AttackingThird => 0.17,
+            self::MiddleThird    => 0.05,
             self::DefensiveThird => 0.01,
         };
     }

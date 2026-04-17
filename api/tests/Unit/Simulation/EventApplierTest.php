@@ -7,6 +7,7 @@ use App\Data\MatchStateData;
 use App\Data\TeamStrengthProfileData;
 use App\Enums\MatchEventType;
 use App\Enums\PitchZone;
+use App\Enums\WeatherCondition;
 use App\Services\Simulation\EventApplier;
 use Tests\TestCase;
 
@@ -182,6 +183,7 @@ class EventApplierTest extends TestCase
             homeProfile: $profile('home-id'), awayProfile: $profile('away-id'),
             homeAdvantageFactor: 0.8, tempoFactor: 0.85, refStrictnessFactor: 0.6,
             expectedHomeAttackingPressure: 0.7, expectedAwayAttackingPressure: 0.65,
+            weather: WeatherCondition::Clear, fatigueFactor: 1.0,
         );
     }
 }
