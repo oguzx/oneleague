@@ -2,9 +2,9 @@
 export
 
 up:
-	@[ -f api/.env ] || cp api/.env.example api/.env
+	cp api/.env.example api/.env
 
-	docker compose up --build -d
+	docker compose down && docker compose up --build -d
 
 	@echo "Waiting for API container..."
 	@until docker compose exec api php -v >/dev/null 2>&1; do \
