@@ -218,6 +218,44 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
 .fixture-toggle { font-size: 9px; color: var(--muted); width: 12px; text-align: center; flex-shrink: 0; }
 
+/* Edit icon button (score edit mode) */
+.fixture-edit-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 12px; padding: 2px 4px; flex-shrink: 0;
+  opacity: .7; transition: opacity .15s;
+}
+.fixture-edit-btn:hover { opacity: 1; }
+
+/* Manual edited badge */
+.manual-edited-badge {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--blue);
+  border: 1px solid var(--blue); border-radius: 3px;
+  padding: 1px 5px; flex-shrink: 0; white-space: nowrap;
+}
+
+/* Inline score edit form */
+.fixture-edit-form {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 8px; padding: 8px 14px;
+  background: var(--surface2); border-bottom: 1px solid var(--border);
+}
+.fixture-edit-home-name { font-size: 11px; font-weight: 500; flex: 1; text-align: right; }
+.fixture-edit-away-name { font-size: 11px; font-weight: 500; flex: 1; }
+.score-input {
+  width: 44px; text-align: center;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--accent); font-size: 15px;
+  font-weight: 700; padding: 3px 6px;
+}
+.score-input:focus { outline: none; border-color: var(--accent); }
+.fixture-edit-actions { display: flex; gap: 6px; }
+.btn-xs { padding: 4px 10px; font-size: 11px; }
+.fixture-edit-error { width: 100%; color: var(--red); font-size: 11px; margin: 0; }
+
+/* Score Edit active button highlight */
+.btn-score-edit--active { color: var(--accent); border-color: var(--accent); }
+
 /* ── Split timeline ───────────────────────────────────────── */
 .tl2 {
   border-top: 1px solid var(--border);

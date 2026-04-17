@@ -1,28 +1,98 @@
 <script setup>
 import { ref, watch } from 'vue'
 import EventTimeline from './EventTimeline.vue'
+import { tournamentApi } from '../api/tournaments'
 
 const props = defineProps({
-  fixture:    { type: Object,  required: true },
-  autoExpand: { type: Boolean, default: false },
+  fixture:       { type: Object,  required: true },
+  autoExpand:    { type: Boolean, default: false },
+  scoreEditMode: { type: Boolean, default: false },
 })
 
-const open = ref(props.autoExpand && props.fixture.events?.length > 0)
+const emit = defineEmits(['fixture-edited'])
+
+const open      = ref(props.autoExpand && props.fixture.events?.length > 0)
+const editing   = ref(false)
+const editHome  = ref(0)
+const editAway  = ref(0)
+const saving    = ref(false)
+const editError = ref(null)
 
 watch(() => props.autoExpand, (val) => {
   if (val && props.fixture.events?.length > 0) open.value = true
 })
 
+// Close edit form when score edit mode is turned off
+watch(() => props.scoreEditMode, (val) => {
+  if (!val) editing.value = false
+})
+
+const completed = props.fixture.status === 'completed'
+
 function toggle() {
+  if (editing.value) return
   if (props.fixture.events?.length) open.value = !open.value
 }
 
-const completed = props.fixture.status === 'completed'
+function openEdit() {
+  editHome.value  = props.fixture.score?.home ?? 0
+  editAway.value  = props.fixture.score?.away ?? 0
+  editError.value = null
+  editing.value   = true
+  open.value      = false
+}
+
+function cancelEdit() {
+  editing.value = false
+}
+
+async function saveEdit() {
+  if (saving.value) return
+  saving.value    = true
+  editError.value = null
+  try {
+    await tournamentApi.editFixture(props.fixture.id, editHome.value, editAway.value)
+    editing.value = false
+    emit('fixture-edited')
+  } catch (e) {
+    editError.value = e.response?.data?.message ?? 'Save failed.'
+  } finally {
+    saving.value = false
+  }
+}
 </script>
 
 <template>
   <div class="fixture-row" :class="{ 'fixture-row--completed': completed }">
-    <div class="fixture-header" @click="toggle">
+
+    <!-- Inline score edit form -->
+    <div v-if="editing" class="fixture-edit-form">
+      <span class="team-name fixture-edit-home-name">{{ fixture.home.name }}</span>
+      <input
+        v-model.number="editHome"
+        type="number" min="0" max="99"
+        class="score-input"
+        :disabled="saving"
+      />
+      <span class="score-sep">–</span>
+      <input
+        v-model.number="editAway"
+        type="number" min="0" max="99"
+        class="score-input"
+        :disabled="saving"
+      />
+      <span class="team-name fixture-edit-away-name">{{ fixture.away.name }}</span>
+      <div class="fixture-edit-actions">
+        <button class="btn btn-primary btn-xs" :disabled="saving" @click="saveEdit">
+          {{ saving ? '…' : 'Save' }}
+        </button>
+        <button class="btn btn-ghost btn-xs" :disabled="saving" @click="cancelEdit">Cancel</button>
+      </div>
+      <p v-if="editError" class="fixture-edit-error">{{ editError }}</p>
+    </div>
+
+    <!-- Normal fixture header -->
+    <div v-else class="fixture-header" @click="toggle">
 
       <!-- Home team -->
       <div class="fixture-team fixture-home">
@@ -58,7 +128,23 @@ const completed = props.fixture.status === 'completed'
         <span class="team-name">{{ fixture.away.name }}</span>
       </div>
 
-      <div class="fixture-toggle" v-if="fixture.events?.length">
+      <!-- Edit icon (score edit mode, completed only) -->
+      <button
+        v-if="scoreEditMode && completed"
+        class="fixture-edit-btn"
+        title="Edit score"
+        @click.stop="openEdit"
+      >✏️</button>
+
+      <!-- Manual edited badge / expand toggle -->
+      <template v-else-if="completed">
+        <span v-if="fixture.is_manually_edited" class="manual-edited-badge">Manual Edited</span>
+        <div v-else-if="fixture.events?.length" class="fixture-toggle">
+          {{ open ? '▲' : '▼' }}
+        </div>
+      </template>
+
+      <div v-else-if="fixture.events?.length" class="fixture-toggle">
         {{ open ? '▲' : '▼' }}
       </div>
     </div>

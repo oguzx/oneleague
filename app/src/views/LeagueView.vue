@@ -13,7 +13,8 @@ const loading     = ref(true)
 const busy        = ref(false)
 const simulating  = ref(false)
 const error       = ref(null)
-const lastWeek    = ref(null)
+const lastWeek      = ref(null)
+const scoreEditMode = ref(false)
 
 let pollTimer    = null
 let lastSeenWeek = null
@@ -185,6 +186,14 @@ onUnmounted(stopPolling)
               {{ simulating ? 'Simulating…' : 'Play All Weeks' }}
             </button>
             <button
+              class="btn btn-ghost"
+              :class="{ 'btn-score-edit--active': scoreEditMode }"
+              :disabled="busy || simulating"
+              @click="scoreEditMode = !scoreEditMode"
+            >
+              {{ scoreEditMode ? 'Done Editing' : 'Score Edit' }}
+            </button>
+            <button
               class="btn btn-danger"
               :disabled="busy || simulating"
               @click="resetLeague"
@@ -202,6 +211,8 @@ onUnmounted(stopPolling)
             :key="group.id"
             :group="group"
             :last-played-week="lastWeek"
+            :score-edit-mode="scoreEditMode"
+            @fixture-edited="silentRefresh"
           />
         </div>
       </template>

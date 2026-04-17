@@ -6,6 +6,7 @@ use App\Exceptions\InvalidTournamentStateException;
 use App\Models\Tournament;
 use App\Services\DrawService;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class DrawController extends Controller
 {
@@ -16,10 +17,10 @@ class DrawController extends Controller
         try {
             $tournament = $this->drawService->draw();
         } catch (InvalidTournamentStateException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response()->json($this->formatResponse($tournament), 201);
+        return response()->json($this->formatResponse($tournament), Response::HTTP_CREATED);
     }
 
     private function formatResponse(Tournament $tournament): array

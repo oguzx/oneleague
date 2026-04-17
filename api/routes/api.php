@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DrawController;
+use App\Http\Controllers\FixtureEditController;
 use App\Http\Controllers\PlayAllController;
 use App\Http\Controllers\PlayMatchController;
 use App\Http\Controllers\PlayWeekController;
@@ -22,3 +23,4 @@ Route::get('/tournaments/{tournament}/simulation-status', SimulationStatusContro
 Route::post('/tournaments/{tournament}/reset', ResetLeagueController::class);
 
 Route::post('/fixtures/{fixture}/play', PlayMatchController::class);
+Route::put('/fixtures/{fixture}', FixtureEditController::class);

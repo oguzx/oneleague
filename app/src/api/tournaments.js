@@ -21,4 +21,7 @@ export const tournamentApi = {
 
   reset: (id) =>
     client.post(`/tournaments/${id}/reset`).then(r => r.data),
+
+  editFixture: (fixtureId, homeScore, awayScore) =>
+    client.put(`/fixtures/${fixtureId}`, { home_score: homeScore, away_score: awayScore }).then(r => r.data),
 }

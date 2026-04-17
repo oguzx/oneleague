@@ -20,10 +20,14 @@ class Fixture extends Model
         'status',
         'home_score',
         'away_score',
+        'is_manually_edited',
+        'manually_edited_at',
     ];
 
     protected $casts = [
-        'status' => FixtureStatus::class,
+        'status'             => FixtureStatus::class,
+        'is_manually_edited' => 'boolean',
+        'manually_edited_at' => 'datetime',
     ];
 
     public function group(): BelongsTo

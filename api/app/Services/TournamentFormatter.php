@@ -88,7 +88,8 @@ class TournamentFormatter
                 'country_code' => $fixture->awayTeam->country_code,
                 'logo_url'     => $fixture->awayTeam->logo_url,
             ],
-            'status' => $fixture->status->value,
+            'status'             => $fixture->status->value,
+            'is_manually_edited' => $fixture->is_manually_edited,
             'score'  => $completed
                 ? ['home' => $fixture->home_score, 'away' => $fixture->away_score]
                 : null,
