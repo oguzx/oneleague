@@ -21,6 +21,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+    env_file:
+      - ./api/.env
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
@@ -29,13 +31,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_DATABASE: oneleague
-      DB_USERNAME: oneleague
-      DB_PASSWORD: secret
 
   nginx:
     image: nginx:alpine
@@ -48,6 +43,22 @@ services:
       - oneleague
     depends_on:
       - api
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    command: php artisan queue:work --tries=3 --timeout=120
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./api:/var/www/html
+      - /var/www/html/vendor
+    networks:
+      - oneleague
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   app:
     build:

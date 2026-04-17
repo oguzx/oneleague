@@ -14,7 +14,7 @@ async function load() {
   loading.value = true
   error.value   = null
   try {
-    const data  = await tournamentApi.list()
+    const data   = await tournamentApi.list()
     active.value = data.active
     past.value   = data.past
   } catch {

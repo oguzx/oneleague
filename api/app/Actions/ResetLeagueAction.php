@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\FixtureStatus;
+use App\Enums\SimulationStatus;
 use App\Models\Fixture;
 use App\Models\MatchEvent;
 use App\Models\Tournament;
@@ -22,13 +23,20 @@ class ResetLeagueAction
             ->pluck('id')
             ->all();
 
-        DB::transaction(function () use ($fixtureIds) {
+        DB::transaction(function () use ($tournament, $fixtureIds) {
             MatchEvent::whereIn('fixture_id', $fixtureIds)->delete();
 
             Fixture::whereIn('id', $fixtureIds)->update([
                 'status'     => FixtureStatus::Scheduled->value,
                 'home_score' => null,
                 'away_score' => null,
+            ]);
+
+            $tournament->update([
+                'simulation_status'      => SimulationStatus::Idle,
+                'simulation_batch_id'    => null,
+                'simulation_started_at'  => null,
+                'simulation_finished_at' => null,
             ]);
         });
     }

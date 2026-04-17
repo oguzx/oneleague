@@ -16,6 +16,9 @@ export const tournamentApi = {
   playAll: (id) =>
     client.post(`/tournaments/${id}/play-all`).then(r => r.data),
 
+  simulationStatus: (id) =>
+    client.get(`/tournaments/${id}/simulation-status`).then(r => r.data),
+
   reset: (id) =>
     client.post(`/tournaments/${id}/reset`).then(r => r.data),
 }

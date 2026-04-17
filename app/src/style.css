@@ -21,7 +21,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 #app { min-height: 100vh; }
 
 /* ── Layout ───────────────────────────────────────────────── */
-.page { min-height: 100vh; display: flex; flex-direction: column; }
+.page { min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
 
 .site-header {
   display: flex; align-items: center; gap: 12px;
@@ -122,6 +122,32 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
   cursor: pointer; transition: all .15s;
 }
 .tab-btn.active { background: var(--accent); color: #111; border-color: var(--accent); }
+
+/* ── Week snapshot filter (inside standings tab) ──────────── */
+.week-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.015);
+}
+
+.wf-btn {
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .3px;
+  transition: all .12s;
+}
+.wf-btn:hover          { color: var(--text); border-color: var(--muted); }
+.wf-btn--active        { background: var(--accent); color: #111; border-color: var(--accent); }
 
 /* ── Standings ────────────────────────────────────────────── */
 .standings-wrap { overflow-x: auto; }
@@ -266,6 +292,80 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
   font-weight: 400;
 }
 .tl2-row--goal .tl2-score { color: var(--accent); opacity: .75; }
+
+/* ── Team Logo Background ─────────────────────────────────── */
+
+/*
+  Fixed overlay behind all page content.
+  4 rows of logos scroll at different speeds / directions.
+  Very low opacity so it reads as ambience, not distraction.
+*/
+.logo-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  overflow: hidden;
+}
+
+.logo-bg__row {
+  overflow: hidden;
+  width: 100%;
+}
+
+.logo-bg__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: logo-ltr var(--dur, 48s) linear infinite;
+}
+
+.logo-bg__track--rtl {
+  animation-name: logo-rtl;
+}
+
+.logo-bg__img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.10;
+  filter: grayscale(40%);
+  user-select: none;
+}
+
+/* LTR: track moves rightward  (second copy → first copy) */
+@keyframes logo-ltr {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0%);   }
+}
+
+/* RTL: track moves leftward   (first copy → second copy) */
+@keyframes logo-rtl {
+  from { transform: translateX(0%);   }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Simulation status bar ────────────────────────────────── */
+.sim-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; margin-bottom: 16px;
+  background: rgba(232,184,75,.08); border: 1px solid rgba(232,184,75,.25);
+  border-radius: var(--radius); font-size: 12px; color: var(--accent);
+}
+.sim-bar__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
 
 /* ── Utility ──────────────────────────────────────────────── */
 .error {

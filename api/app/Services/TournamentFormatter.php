@@ -31,11 +31,12 @@ class TournamentFormatter
         $totalWeeks = $allFixtures->max('match_week');
 
         return [
-            'id'           => $tournament->id,
-            'name'         => $tournament->name,
-            'current_week' => $currentWeek,
-            'total_weeks'  => $totalWeeks,
-            'groups'       => $tournament->groups->map(fn($g) => $this->formatGroup($g))->values(),
+            'id'                => $tournament->id,
+            'name'              => $tournament->name,
+            'current_week'      => $currentWeek,
+            'total_weeks'       => $totalWeeks,
+            'simulation_status' => $tournament->simulation_status?->value ?? 'idle',
+            'groups'            => $tournament->groups->map(fn($g) => $this->formatGroup($g))->values(),
         ];
     }
 
