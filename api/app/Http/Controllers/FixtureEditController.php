@@ -13,19 +13,23 @@ class FixtureEditController extends Controller
 {
     public function __invoke(UpdateFixtureRequest $request, Fixture $fixture): JsonResponse
     {
-        if ($fixture->status !== FixtureStatus::Completed) {
+        if (!in_array($fixture->status, [FixtureStatus::Scheduled, FixtureStatus::Completed], strict: true)) {
             return ApiResponse::error(
-                'Only completed fixtures can be edited.',
+                'Only scheduled or completed fixtures can be edited.',
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 'INVALID_STATE'
             );
         }
 
-        $fixture->events()->delete();
+        // Delete simulation events only when overwriting a completed match
+        if ($fixture->status === FixtureStatus::Completed) {
+            $fixture->events()->delete();
+        }
 
         $fixture->update([
             'home_score'         => $request->integer('home_score'),
             'away_score'         => $request->integer('away_score'),
+            'status'             => FixtureStatus::Completed,
             'is_manually_edited' => true,
             'manually_edited_at' => now(),
         ]);

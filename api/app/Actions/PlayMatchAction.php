@@ -2,40 +2,35 @@
 
 namespace App\Actions;
 
-use App\Data\LeagueTableRowData;
 use App\Data\SimulationResultData;
 use App\Enums\FixtureStatus;
 use App\Exceptions\InvalidTournamentStateException;
 use App\Models\Fixture;
-use App\Services\LeagueTableService;
 use App\Services\MatchEventPersistenceService;
 use App\Services\Simulation\MatchContextFactory;
 use App\Services\Simulation\MatchStateFactory;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class PlayMatchAction
 {
     public function __construct(
-        private readonly MatchContextFactory           $contextFactory,
-        private readonly MatchStateFactory             $stateFactory,
-        private readonly SimulateMatchAction           $simulator,
-        private readonly LeagueTableService            $leagueTable,
-        private readonly MatchEventPersistenceService  $eventPersistence,
+        private readonly MatchContextFactory          $contextFactory,
+        private readonly MatchStateFactory            $stateFactory,
+        private readonly SimulateMatchAction          $simulator,
+        private readonly MatchEventPersistenceService $eventPersistence,
     ) {}
 
     /**
-     * Orchestrates the full match play flow:
-     * validate → simulate → persist result + events → recalculate standings.
+     * Validate → simulate → persist result + events.
+     * Standings computation is the caller's responsibility.
      *
-     * @return array{result: SimulationResultData, table: Collection<LeagueTableRowData>}
      * @throws InvalidTournamentStateException
      */
-    public function execute(Fixture $fixture): array
+    public function execute(Fixture $fixture): SimulationResultData
     {
         $this->guardPlayable($fixture);
 
-        $fixture->loadMissing(['homeTeam.stat', 'awayTeam.stat', 'group.teams', 'group.fixtures']);
+        $fixture->loadMissing(['homeTeam.stat', 'awayTeam.stat']);
 
         $context = $this->contextFactory->build($fixture);
         $state   = $this->stateFactory->build($context);
@@ -46,9 +41,7 @@ class PlayMatchAction
             $this->eventPersistence->persist($result);
         });
 
-        $table = $this->leagueTable->forGroup($fixture->group);
-
-        return ['result' => $result, 'table' => $table];
+        return $result;
     }
 
     private function guardPlayable(Fixture $fixture): void

@@ -34,9 +34,17 @@ class StatEventWeightModifier implements EventWeightModifierInterface
         $bag->scale(MatchEventType::ShotAttempt,
             $this->matchupFactor($possession->attack, $defending->defense));
 
-        // Better midfield reduces sloppy turnovers
+        // Better midfield retains possession and advances the ball
         $bag->scale(MatchEventType::PassFailed,
             $this->inverseFactor($possession->midfield));
+        $bag->scale(MatchEventType::PassCompleted,
+            $this->singleStatFactor($possession->midfield));
+
+        // Better attack → successful dribbles that advance into dangerous zones
+        $bag->scale(MatchEventType::DribbleSuccess,
+            $this->matchupFactor($possession->attack, $defending->defense));
+        $bag->scale(MatchEventType::DribbleFailed,
+            $this->inverseFactor($possession->attack));
 
         // Better defensive pressing wins more interceptions
         $bag->scale(MatchEventType::Interception,
@@ -46,39 +54,47 @@ class StatEventWeightModifier implements EventWeightModifierInterface
         $bag->scale(MatchEventType::TackleWon,
             $this->singleStatFactor($defending->defense));
 
+        // Attacking pressure directly boosts shot and corner frequency
+        $attackingPressure = $state->possessionIsHome()
+            ? $context->expectedHomeAttackingPressure
+            : $context->expectedAwayAttackingPressure;
+
+        $bag->scale(MatchEventType::ShotAttempt, 1.0 + $attackingPressure * 0.40);
+        $bag->scale(MatchEventType::CornerWon,   1.0 + $attackingPressure * 0.25);
+
         // Home side gets a modest possession-quality uplift on their own ground
         if ($possession->teamId === $context->homeTeamId) {
-            $bag->scale(MatchEventType::PassCompleted, 1.0 + $context->homeAdvantageFactor * 0.10);
-            $bag->scale(MatchEventType::ShotAttempt,   1.0 + $context->homeAdvantageFactor * 0.08);
+            $bag->scale(MatchEventType::PassCompleted, 1.0 + $context->homeAdvantageFactor * 0.12);
+            $bag->scale(MatchEventType::ShotAttempt,   1.0 + $context->homeAdvantageFactor * 0.10);
         }
     }
 
     // ─── Bounded factor helpers ───────────────────────────────────────────────
 
     /**
-     * Compares two 0–1 stats and returns a factor in [0.70, 1.30].
-     * Positive difference (attack > defence) boosts the event; negative reduces it.
+     * Compares two 0–1 stats and returns a factor in [0.50, 1.70].
+     * Wider range so elite vs poor matchups create a meaningful gap.
      */
     private function matchupFactor(float $attack, float $defense): float
     {
-        return max(0.70, min(1.30, 1.0 + ($attack - $defense) * 0.60));
+        return max(0.50, min(1.70, 1.0 + ($attack - $defense) * 1.10));
     }
 
     /**
      * Higher stat → lower factor (e.g. good midfield → fewer failed passes).
-     * Returns a factor in [0.70, 1.00].
+     * Returns a factor in [0.50, 1.00].
      */
     private function inverseFactor(float $stat): float
     {
-        return max(0.70, 1.0 - $stat * 0.30);
+        return max(0.50, 1.0 - $stat * 0.50);
     }
 
     /**
      * Higher stat → higher factor (e.g. strong presser → more interceptions).
-     * Returns a factor in [0.85, 1.45].
+     * Returns a factor in [0.75, 1.75].
      */
     private function singleStatFactor(float $stat): float
     {
-        return 0.85 + $stat * 0.60;
+        return 0.75 + $stat * 1.00;
     }
 }

@@ -22,7 +22,7 @@ up:
 	@echo "Opening browser..."
 	open http://127.0.0.1:5173 || xdg-open http://127.0.0.1:5173 || start http://127.0.0.1:5173
 
-fresh_seed:
+refresh:
 	docker compose exec api php artisan migrate:fresh --seed
 
 test:

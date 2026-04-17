@@ -1,17 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import StandingsTable from './StandingsTable.vue'
 import FixtureRow from './FixtureRow.vue'
 
 const props = defineProps({
-  group:          { type: Object,  required: true },
-  lastPlayedWeek: { type: Number,  default: null },
-  scoreEditMode:  { type: Boolean, default: false },
+  group:         { type: Object,  required: true },
+  scoreEditMode: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['fixture-edited'])
 
 const tab          = ref('standings')
+
+watch(() => props.scoreEditMode, (val) => {
+  if (val) tab.value = 'fixtures'
+})
 const selectedWeek = ref(null)   // null = current (full) standings
 
 // ─── Week history helpers ─────────────────────────────────────────────────
@@ -138,7 +141,6 @@ const displayedRows = computed(() =>
           v-for="fixture in fixtures"
           :key="fixture.id"
           :fixture="fixture"
-          :auto-expand="Number(week) === lastPlayedWeek"
           :score-edit-mode="scoreEditMode"
           @fixture-edited="emit('fixture-edited')"
         />

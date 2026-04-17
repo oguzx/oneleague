@@ -29,7 +29,7 @@ class PlayWeekAction
             throw new InvalidTournamentStateException('No scheduled fixtures remaining in this tournament.');
         }
 
-        $weekFixtures = Fixture::with(['homeTeam.stat', 'awayTeam.stat', 'group.teams', 'group.fixtures'])
+        $weekFixtures = Fixture::with(['homeTeam.stat', 'awayTeam.stat'])
             ->join('groups', 'groups.id', '=', 'fixtures.group_id')
             ->where('groups.tournament_id', $tournament->id)
             ->where('fixtures.match_week', $currentWeek)

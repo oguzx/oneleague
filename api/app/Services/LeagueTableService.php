@@ -20,8 +20,8 @@ class LeagueTableService
     {
         $group->loadMissing(['teams', 'fixtures']);
 
-        $lastUpdated = $group->fixtures->max('updated_at')?->timestamp ?? 0;
-        $cacheKey    = "standings:{$group->id}:{$lastUpdated}";
+        $completedCount = $group->fixtures->where('status', FixtureStatus::Completed)->count();
+        $cacheKey       = "standings:{$group->id}:completed:{$completedCount}";
 
         $rows = Cache::remember($cacheKey, 300, fn() =>
             $this->compute($group)->map(fn(LeagueTableRowData $r) => [

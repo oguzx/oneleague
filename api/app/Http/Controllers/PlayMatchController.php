@@ -9,17 +9,21 @@ use App\Data\SimulationResultData;
 use App\Exceptions\InvalidTournamentStateException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Fixture;
+use App\Services\LeagueTableService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class PlayMatchController extends Controller
 {
-    public function __construct(private readonly PlayMatchAction $action) {}
+    public function __construct(
+        private readonly PlayMatchAction   $action,
+        private readonly LeagueTableService $leagueTable,
+    ) {}
 
     public function __invoke(Fixture $fixture): JsonResponse
     {
         try {
-            ['result' => $result, 'table' => $table] = $this->action->execute($fixture);
+            $result = $this->action->execute($fixture);
         } catch (InvalidTournamentStateException $e) {
             return ApiResponse::error(
                 $e->getMessage(),
@@ -27,6 +31,9 @@ class PlayMatchController extends Controller
                 'INVALID_STATE'
             );
         }
+
+        $fixture->load(['group.teams', 'group.fixtures']);
+        $table = $this->leagueTable->forGroup($fixture->group);
 
         return ApiResponse::success($this->formatResponse($result, $table));
     }

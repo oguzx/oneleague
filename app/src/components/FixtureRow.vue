@@ -1,33 +1,28 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import EventTimeline from './EventTimeline.vue'
 import { tournamentApi } from '../api/tournaments'
 
 const props = defineProps({
   fixture:       { type: Object,  required: true },
-  autoExpand:    { type: Boolean, default: false },
   scoreEditMode: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['fixture-edited'])
 
-const open      = ref(props.autoExpand && props.fixture.events?.length > 0)
+const open      = ref(false)
 const editing   = ref(false)
 const editHome  = ref(0)
 const editAway  = ref(0)
 const saving    = ref(false)
 const editError = ref(null)
 
-watch(() => props.autoExpand, (val) => {
-  if (val && props.fixture.events?.length > 0) open.value = true
-})
-
 // Close edit form when score edit mode is turned off
 watch(() => props.scoreEditMode, (val) => {
   if (!val) editing.value = false
 })
 
-const completed = props.fixture.status === 'completed'
+const completed = computed(() => props.fixture.status === 'completed')
 
 const weatherIcon = {
   clear: '☀️',
@@ -140,10 +135,10 @@ async function saveEdit() {
         <span class="team-name">{{ fixture.away.name }}</span>
       </div>
 
-      <!-- Edit icon (score edit mode, completed only) -->
+      <!-- Edit icon (score edit mode) -->
       <button
-        v-if="scoreEditMode && completed"
-        class="fixture-edit-btn fixture-gutter"
+        v-if="scoreEditMode"
+        class="fixture-edit-btn fixture-gutter fixture-edit-btn--glow"
         title="Edit score"
         @click.stop="openEdit"
       >✏️</button>

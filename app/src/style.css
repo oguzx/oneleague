@@ -229,9 +229,19 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 .fixture-edit-btn {
   background: none; border: none; cursor: pointer;
   font-size: 12px; padding: 2px 4px; flex-shrink: 0;
-  opacity: .7; transition: opacity .15s;
+  opacity: .7; transition: opacity .15s; border-radius: 4px;
 }
-.fixture-edit-btn:hover { opacity: 1; }
+.fixture-edit-btn:hover:not(:disabled) { opacity: 1; }
+.fixture-edit-btn:disabled { opacity: .25; cursor: not-allowed; }
+
+@keyframes edit-btn-glow {
+  0%   { box-shadow: 0 0 0 0 rgba(232,184,75,.0); }
+  30%  { box-shadow: 0 0 6px 3px rgba(232,184,75,.7); }
+  100% { box-shadow: 0 0 0 0 rgba(232,184,75,.0); }
+}
+.fixture-edit-btn--glow {
+  animation: edit-btn-glow .55s ease-out 2;
+}
 
 /* Manual edited badge */
 .manual-edited-badge {

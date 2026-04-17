@@ -13,7 +13,6 @@ const loading     = ref(true)
 const busy        = ref(false)
 const simulating  = ref(false)
 const error       = ref(null)
-const lastWeek      = ref(null)
 const scoreEditMode = ref(false)
 
 let pollTimer    = null
@@ -52,10 +51,8 @@ async function playWeek() {
   if (busy.value || simulating.value) return
   busy.value  = true
   error.value = null
-  const prevWeek = tournament.value?.current_week
   try {
     tournament.value = await tournamentApi.playWeek(id)
-    lastWeek.value   = prevWeek
   } catch (e) {
     error.value = e.response?.data?.message ?? 'Play week failed.'
   } finally {
@@ -70,7 +67,6 @@ async function playAll() {
   try {
     await tournamentApi.playAll(id)
     simulating.value = true
-    lastWeek.value   = null
     startPolling()
   } catch (e) {
     error.value = e.response?.data?.message ?? 'Play all failed.'
@@ -87,7 +83,6 @@ async function resetLeague() {
   error.value = null
   try {
     tournament.value = await tournamentApi.reset(id)
-    lastWeek.value   = null
   } catch (e) {
     error.value = e.response?.data?.message ?? 'Reset failed.'
   } finally {
@@ -210,7 +205,6 @@ onUnmounted(stopPolling)
             v-for="group in tournament.groups"
             :key="group.id"
             :group="group"
-            :last-played-week="lastWeek"
             :score-edit-mode="scoreEditMode"
             @fixture-edited="silentRefresh"
           />
