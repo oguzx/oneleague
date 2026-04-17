@@ -5,6 +5,7 @@ use App\Http\Controllers\FixtureEditController;
 use App\Http\Controllers\PlayAllController;
 use App\Http\Controllers\PlayMatchController;
 use App\Http\Controllers\PlayWeekController;
+use App\Http\Controllers\RegenerateLeagueController;
 use App\Http\Controllers\ResetLeagueController;
 use App\Http\Controllers\SimulationStatusController;
 use App\Http\Controllers\TeamController;
@@ -24,6 +25,7 @@ Route::prefix('/tournaments/{tournament}')->group(function () {
     Route::post('/play-all',         PlayAllController::class);
     Route::get('/simulation-status', SimulationStatusController::class);
     Route::post('/reset',            ResetLeagueController::class);
+    Route::post('/regenerate',       RegenerateLeagueController::class);
 });
 
 Route::get('/tournaments', [TournamentController::class, 'index']);

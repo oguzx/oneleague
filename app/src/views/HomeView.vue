@@ -46,7 +46,7 @@ onMounted(load)
 <template>
   <div class="page">
     <header class="site-header">
-      <h1 class="site-title">OneLeague</h1>
+      <h1 class="site-title"><span class="site-title-ones">One</span><span class="site-title-league">League</span></h1>
     </header>
 
     <main class="home">

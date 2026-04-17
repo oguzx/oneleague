@@ -16,5 +16,5 @@ onMounted(async () => {
 
 <template>
   <TeamLogoBanner :teams="teams" />
-  <router-view />
+  <router-view :key="$route.fullPath" />
 </template>

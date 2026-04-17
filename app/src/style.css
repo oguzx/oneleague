@@ -29,7 +29,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   background: var(--surface);
 }
 
-.site-title { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: .5px; }
+.site-title { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+.site-title-ones   { color: var(--text); }
+.site-title-league { color: var(--accent); }
 
 main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
@@ -54,7 +56,7 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 .btn-primary   { background: var(--accent); color: #111; }
 .btn-secondary { background: var(--blue);   color: #fff; }
 .btn-danger    { background: var(--red);    color: #fff; }
-.btn-ghost     { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost     { background: #e9b84b1f; color: #fbfbfb; border: 1px solid var(--border); }
 .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
 
 /* ── Home ─────────────────────────────────────────────────── */
@@ -89,7 +91,23 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 .league-meta  { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .league-meta--done { color: var(--green); }
 
-.action-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+.action-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* Danger dropdown */
+.danger-dropdown { position: relative; }
+.danger-menu {
+  position: absolute; top: calc(100% + 6px); right: 0;
+  background: var(--surface); border: 1px solid var(--red);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow); z-index: 100; min-width: 160px;
+}
+.danger-menu-item {
+  display: block; width: 100%; text-align: left;
+  padding: 10px 16px; background: none; border: none;
+  color: var(--text); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background .12s;
+}
+.danger-menu-item:hover { background: var(--surface2); color: var(--red); }
 
 .back-btn { font-size: 12px; padding: 6px 12px; }
 

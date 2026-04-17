@@ -14,6 +14,9 @@ up:
 	@echo "Running migrations..."
 	docker compose exec api php artisan migrate:fresh --seed
 
+	@echo "Restarting queue worker..."
+	docker compose restart queue
+
 	@echo "Waiting for frontend (Vite)..."
 	@until curl -s http://127.0.0.1:5173 >/dev/null; do \
 		sleep 2; \

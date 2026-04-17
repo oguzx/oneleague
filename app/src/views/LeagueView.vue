@@ -13,7 +13,15 @@ const loading     = ref(true)
 const busy        = ref(false)
 const simulating  = ref(false)
 const error       = ref(null)
-const scoreEditMode = ref(false)
+const scoreEditMode   = ref(false)
+const dangerOpen      = ref(false)
+const dangerDropdownEl = ref(null)
+
+function onDocClick(e) {
+  if (dangerDropdownEl.value && !dangerDropdownEl.value.contains(e.target)) {
+    dangerOpen.value = false
+  }
+}
 
 let pollTimer    = null
 let lastSeenWeek = null
@@ -76,7 +84,7 @@ async function playAll() {
 }
 
 async function resetLeague() {
-  if (!confirm('Reset all match results for this league?')) return
+  dangerOpen.value = false
   stopPolling()
   simulating.value = false
   busy.value  = true
@@ -87,6 +95,21 @@ async function resetLeague() {
     error.value = e.response?.data?.message ?? 'Reset failed.'
   } finally {
     busy.value = false
+  }
+}
+
+async function regenerateLeague() {
+  dangerOpen.value = false
+  stopPolling()
+  simulating.value = false
+  busy.value  = true
+  error.value = null
+  try {
+    const newTournament = await tournamentApi.regenerate(id)
+    router.replace(`/league/${newTournament.tournament_id}`)
+  } catch (e) {
+    error.value = e.response?.data?.message ?? 'Regenerate failed.'
+    busy.value  = false
   }
 }
 
@@ -125,15 +148,15 @@ function stopPolling() {
   }
 }
 
-onMounted(load)
-onUnmounted(stopPolling)
+onMounted(() => { load(); document.addEventListener('click', onDocClick) })
+onUnmounted(() => { stopPolling(); document.removeEventListener('click', onDocClick) })
 </script>
 
 <template>
   <div class="page">
     <header class="site-header">
       <button class="btn btn-ghost back-btn" @click="router.push('/')">← Back</button>
-      <h1 class="site-title">OneLeague</h1>
+      <h1 class="site-title"><span class="site-title-ones">One</span><span class="site-title-league">League</span></h1>
     </header>
 
     <main class="league-view">
@@ -188,13 +211,19 @@ onUnmounted(stopPolling)
             >
               {{ scoreEditMode ? 'Done Editing' : 'Score Edit' }}
             </button>
-            <button
-              class="btn btn-danger"
-              :disabled="busy || simulating"
-              @click="resetLeague"
-            >
-              Reset League
-            </button>
+            <div ref="dangerDropdownEl" class="danger-dropdown">
+              <button
+                class="btn btn-danger"
+                :disabled="busy || simulating"
+                @click="dangerOpen = !dangerOpen"
+              >
+               League ▾
+              </button>
+              <div v-if="dangerOpen" class="danger-menu">
+                <button class="danger-menu-item" @click="resetLeague">Reset League</button>
+                <button class="danger-menu-item" @click="regenerateLeague">Regenerate League</button>
+              </div>
+            </div>
           </div>
         </div>
 
