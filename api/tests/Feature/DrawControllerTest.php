@@ -44,9 +44,13 @@ class DrawControllerTest extends TestCase
         $response = $this->postJson('/api/tournament/draw');
 
         $response->assertStatus(201)
+                 ->assertJson(['success' => true])
                  ->assertJsonStructure([
-                     'tournament_id',
-                     'groups' => [['name', 'teams', 'fixtures']],
+                     'success',
+                     'data' => [
+                         'tournament_id',
+                         'groups' => [['name', 'teams', 'fixtures']],
+                     ],
                  ]);
     }
 
@@ -55,7 +59,8 @@ class DrawControllerTest extends TestCase
         $response = $this->postJson('/api/tournament/draw');
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message']);
+                 ->assertJson(['success' => false, 'code' => 'INVALID_STATE'])
+                 ->assertJsonStructure(['success', 'message', 'code', 'errors']);
     }
 
     public function test_groups_count_matches_teams_per_pot(): void
@@ -65,7 +70,7 @@ class DrawControllerTest extends TestCase
         $response = $this->postJson('/api/tournament/draw');
 
         $response->assertStatus(201);
-        $this->assertCount(4, $response->json('groups'));
+        $this->assertCount(4, $response->json('data.groups'));
     }
 
     public function test_each_group_has_team_from_each_pot(): void
@@ -75,7 +80,7 @@ class DrawControllerTest extends TestCase
         $response = $this->postJson('/api/tournament/draw');
 
         $response->assertStatus(201);
-        foreach ($response->json('groups') as $group) {
+        foreach ($response->json('data.groups') as $group) {
             $pots = collect($group['teams'])->pluck('pot')->sort()->values()->all();
             $this->assertEquals([1, 2, 3, 4], $pots);
         }

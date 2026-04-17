@@ -8,6 +8,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property string         $id
+ * @property string         $name
+ * @property string|null    $color
+ * @property string|null    $logo_url
+ * @property string|null    $country_code
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property-read TeamStat|null                                                  $stat
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Group>          $groups
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Fixture>        $homeFixtures
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Fixture>        $awayFixtures
+ */
 class Team extends Model
 {
     use HasUuids;

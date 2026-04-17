@@ -37,7 +37,7 @@ class PlayMatchCommand extends Command
         }
 
         foreach ($fixtures as $fixture) {
-            if($fixture->status != FixtureStatus::Scheduled) {
+            if ($fixture->status !== FixtureStatus::Scheduled) {
                 continue;
             }
             try {

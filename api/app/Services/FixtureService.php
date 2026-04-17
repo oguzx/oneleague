@@ -12,20 +12,19 @@ use Illuminate\Support\Str;
 
 class FixtureService
 {
-    const int TEAM_COUNT = 4;
-
     /**
-     * Generate a double round-robin schedule for a 4-team group and persist it.
+     * Generate a double round-robin schedule for a group and persist it.
      * Uses the circle (polygon) rotation method.
      */
     public function generateForGroup(Group $group): void
     {
-        $teams = $group->teams->values()->all();
+        $teams     = $group->teams->values()->all();
         $teamCount = count($teams);
+        $required  = config('league.teams_per_group');
 
-        if ($teamCount !== self::TEAM_COUNT) {
+        if ($teamCount !== $required) {
             throw new InvalidTournamentStateException(
-                "Each group must have exactly 4 teams, got {$teamCount} in group '{$group->name}'."
+                "Each group must have exactly {$required} teams, got {$teamCount} in group '{$group->name}'."
             );
         }
 

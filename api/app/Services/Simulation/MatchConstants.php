@@ -5,7 +5,7 @@ namespace App\Services\Simulation;
 final class MatchConstants
 {
     public const int DURATION_MINUTES   = 90;
-    public const int TICK_SECONDS       = 15;
+    public const int TICK_SECONDS       = 30;
     public const int TICKS_PER_MINUTE   = 60 / self::TICK_SECONDS;   // 4
     public const int TOTAL_TICKS        = self::DURATION_MINUTES * self::TICKS_PER_MINUTE; // 360
     public const int HALF_TICKS         = self::TOTAL_TICKS / 2;     // 180

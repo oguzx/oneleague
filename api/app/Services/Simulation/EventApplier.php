@@ -14,7 +14,7 @@ use App\Enums\PitchZone;
  * Applies one event to the match state and returns the MatchEventData objects
  * generated (can be more than one, e.g. shot_attempt + goal in the same tick).
  *
- * Mutates $state in-place.
+ * Mutates $state via its public mutation methods — never touches properties directly.
  *
  * @return MatchEventData[]
  */
@@ -41,18 +41,18 @@ class EventApplier
                 $this->resolveShotOutcome($state, $context)
             ),
 
-            MatchEventType::CornerWon    => $this->handleCornerWon($state),
+            MatchEventType::CornerWon     => $this->handleCornerWon($state),
             MatchEventType::FoulCommitted => $this->handleFoul($state),
             MatchEventType::Goal          => $this->handleGoal($state),
 
-            MatchEventType::DribbleSuccess => $state->zone = $state->zone->advance(),
-            MatchEventType::PassCompleted  => $state->zone = $this->progressZoneOnPass($state->zone),
+            MatchEventType::DribbleSuccess => $state->setZone($state->zone()->advance()),
+            MatchEventType::PassCompleted  => $state->setZone($this->progressZoneOnPass($state->zone())),
 
             MatchEventType::Kickoff,
-            MatchEventType::PossessionStart => $state->zone = PitchZone::MiddleThird,
+            MatchEventType::PossessionStart => $state->setZone(PitchZone::MiddleThird),
 
             MatchEventType::HalfTime => $this->handleHalfTime($state, $context),
-            MatchEventType::FullTime  => $state->isFinished = true,
+            MatchEventType::FullTime  => $state->markFinished(),
 
             default => null,
         };
@@ -60,7 +60,7 @@ class EventApplier
         $this->updateFatigue($state, $context);
         $this->updateMomentum($event, $state);
 
-        $state->lastEventType = $event;
+        $state->setLastEvent($event);
 
         return $events;
     }
@@ -69,45 +69,45 @@ class EventApplier
 
     private function handlePossessionChange(MatchStateData $state): void
     {
-        $state->zone = $state->zone->flipForPossessionChange();
+        $state->setZone($state->zone()->flipForPossessionChange());
         $state->switchPossession();
-        $state->phase = MatchPhase::Normal;
+        $state->setPhase(MatchPhase::Normal);
     }
 
     private function handleCornerWon(MatchStateData $state): void
     {
-        $state->zone  = PitchZone::PenaltyArea;
-        $state->phase = MatchPhase::CornerKick;
+        $state->setZone(PitchZone::PenaltyArea);
+        $state->setPhase(MatchPhase::CornerKick);
     }
 
     private function handleFoul(MatchStateData $state): void
     {
-        $state->phase = MatchPhase::FreeKick;
+        $state->setPhase(MatchPhase::FreeKick);
         // Possession does not change on a foul; the fouled team keeps it
     }
 
     private function handleGoal(MatchStateData $state): void
     {
         if ($state->possessionIsHome()) {
-            $state->homeScore++;
+            $state->incrementHomeScore();
         } else {
-            $state->awayScore++;
+            $state->incrementAwayScore();
         }
 
         // After a goal the other team kicks off from the centre
         $state->switchPossession();
-        $state->zone  = PitchZone::MiddleThird;
-        $state->phase = MatchPhase::AfterGoal;
+        $state->setZone(PitchZone::MiddleThird);
+        $state->setPhase(MatchPhase::AfterGoal);
     }
 
     private function handleHalfTime(MatchStateData $state, MatchContextData $context): void
     {
-        $state->currentHalf = 2;
+        $state->setCurrentHalf(2);
         // Away team kicks off second half
-        $state->possessionTeamId = $context->awayTeamId;
-        $state->defendingTeamId  = $context->homeTeamId;
-        $state->zone             = PitchZone::MiddleThird;
-        $state->phase            = MatchPhase::Normal;
+        $state->setPossessionTeam($context->awayTeamId);
+        $state->setDefendingTeam($context->homeTeamId);
+        $state->setZone(PitchZone::MiddleThird);
+        $state->setPhase(MatchPhase::Normal);
     }
 
     // ─── Shot outcome resolution ─────────────────────────────────────────────
@@ -117,9 +117,9 @@ class EventApplier
         MatchStateData $state,
         MatchContextData $context,
     ): array {
-        $attacker  = $state->possessionIsHome() ? $context->homeProfile : $context->awayProfile;
-        $keeper    = $state->possessionIsHome() ? $context->awayProfile : $context->homeProfile;
-        $outcome   = $this->rollShotOutcome($attacker, $keeper, $state->zone);
+        $attacker = $state->possessionIsHome() ? $context->homeProfile : $context->awayProfile;
+        $keeper   = $state->possessionIsHome() ? $context->awayProfile : $context->homeProfile;
+        $outcome  = $this->rollShotOutcome($attacker, $keeper, $state->zone());
 
         $event = $this->buildEvent($outcome, $state);
 
@@ -127,9 +127,9 @@ class EventApplier
             $this->handleGoal($state);
         } else {
             // Keeper / defender wins possession
-            $state->zone = $state->zone->flipForPossessionChange();
+            $state->setZone($state->zone()->flipForPossessionChange());
             $state->switchPossession();
-            $state->phase = MatchPhase::Normal;
+            $state->setPhase(MatchPhase::Normal);
         }
 
         return [$event];
@@ -147,10 +147,10 @@ class EventApplier
         $roll = mt_rand(0, 1_000_000) / 1_000_000.0;
 
         return match(true) {
-            $roll < $goalProb                            => MatchEventType::Goal,
-            $roll < $goalProb + $savedProb               => MatchEventType::ShotSaved,
-            $roll < $goalProb + $savedProb + $blockedProb => MatchEventType::ShotBlocked,
-            default                                      => MatchEventType::ShotOffTarget,
+            $roll < $goalProb                                => MatchEventType::Goal,
+            $roll < $goalProb + $savedProb                  => MatchEventType::ShotSaved,
+            $roll < $goalProb + $savedProb + $blockedProb   => MatchEventType::ShotBlocked,
+            default                                         => MatchEventType::ShotOffTarget,
         };
     }
 
@@ -180,25 +180,29 @@ class EventApplier
 
     private function updateFatigue(MatchStateData $state, MatchContextData $context): void
     {
-        $rate = $state->currentHalf === 1
+        $rate = $state->currentHalf() === 1
             ? MatchConstants::FATIGUE_RATE_FIRST_HALF
             : MatchConstants::FATIGUE_RATE_SECOND_HALF;
 
-        $state->homeFatigue = min(1.0,
-            $state->homeFatigue + $rate * (1.0 - $context->homeProfile->fatigueResistance * 0.5)
-        );
-        $state->awayFatigue = min(1.0,
-            $state->awayFatigue + $rate * (1.0 - $context->awayProfile->fatigueResistance * 0.5)
-        );
+        $state->setHomeFatigue(min(1.0,
+            $state->homeFatigue() + $rate * (1.0 - $context->homeProfile->fatigueResistance * 0.5)
+        ));
+        $state->setAwayFatigue(min(1.0,
+            $state->awayFatigue() + $rate * (1.0 - $context->awayProfile->fatigueResistance * 0.5)
+        ));
     }
 
     private function updateMomentum(MatchEventType $event, MatchStateData $state): void
     {
         // Both sides drift toward neutral every tick
-        $state->homeMomentum = $state->homeMomentum * MatchConstants::MOMENTUM_DECAY
-                             + MatchConstants::MOMENTUM_NEUTRAL * (1.0 - MatchConstants::MOMENTUM_DECAY);
-        $state->awayMomentum = $state->awayMomentum * MatchConstants::MOMENTUM_DECAY
-                             + MatchConstants::MOMENTUM_NEUTRAL * (1.0 - MatchConstants::MOMENTUM_DECAY);
+        $state->setHomeMomentum(
+            $state->homeMomentum() * MatchConstants::MOMENTUM_DECAY
+            + MatchConstants::MOMENTUM_NEUTRAL * (1.0 - MatchConstants::MOMENTUM_DECAY)
+        );
+        $state->setAwayMomentum(
+            $state->awayMomentum() * MatchConstants::MOMENTUM_DECAY
+            + MatchConstants::MOMENTUM_NEUTRAL * (1.0 - MatchConstants::MOMENTUM_DECAY)
+        );
 
         $delta = match($event) {
             MatchEventType::Goal        => 0.15,
@@ -212,11 +216,11 @@ class EventApplier
         if ($delta === 0.0) return;
 
         if ($state->possessionIsHome()) {
-            $state->homeMomentum = min(1.0, $state->homeMomentum + $delta);
-            $state->awayMomentum = max(0.0, $state->awayMomentum - $delta * 0.3);
+            $state->setHomeMomentum(min(1.0, $state->homeMomentum() + $delta));
+            $state->setAwayMomentum(max(0.0, $state->awayMomentum() - $delta * 0.3));
         } else {
-            $state->awayMomentum = min(1.0, $state->awayMomentum + $delta);
-            $state->homeMomentum = max(0.0, $state->homeMomentum - $delta * 0.3);
+            $state->setAwayMomentum(min(1.0, $state->awayMomentum() + $delta));
+            $state->setHomeMomentum(max(0.0, $state->homeMomentum() - $delta * 0.3));
         }
     }
 
@@ -226,12 +230,12 @@ class EventApplier
     {
         return new MatchEventData(
             type:           $type,
-            minute:         $state->currentMinute,
-            second:         $state->currentSecond,
-            tick:           $state->currentTick,
+            minute:         $state->currentMinute(),
+            second:         $state->currentSecond(),
+            tick:           $state->currentTick(),
             teamId:         $this->actingTeamId($type, $state),
             opponentTeamId: $this->opponentTeamId($type, $state),
-            zone:           $state->zone,
+            zone:           $state->zone(),
             payload:        $this->buildPayload($type, $state),
         );
     }
@@ -242,8 +246,8 @@ class EventApplier
             MatchEventType::HalfTime, MatchEventType::FullTime => null,
             // Possession-change events are performed by the defending team
             MatchEventType::Interception,
-            MatchEventType::TackleWon => $state->defendingTeamId,
-            default                   => $state->possessionTeamId,
+            MatchEventType::TackleWon => $state->defendingTeamId(),
+            default                   => $state->possessionTeamId(),
         };
     }
 
@@ -253,7 +257,7 @@ class EventApplier
             MatchEventType::HalfTime,
             MatchEventType::FullTime,
             MatchEventType::Kickoff   => null,
-            default                   => $state->defendingTeamId,
+            default                   => $state->defendingTeamId(),
         };
     }
 
@@ -262,12 +266,12 @@ class EventApplier
         return match($type) {
             MatchEventType::Goal => [
                 'score_after' => [
-                    'home' => $state->homeScore,
-                    'away' => $state->awayScore,
+                    'home' => $state->homeScore(),
+                    'away' => $state->awayScore(),
                 ],
             ],
             MatchEventType::ShotAttempt => [
-                'zone' => $state->zone->value,
+                'zone' => $state->zone()->value,
             ],
             default => [],
         };

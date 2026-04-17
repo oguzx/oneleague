@@ -122,13 +122,12 @@ class LastEventContextWeightModifierTest extends TestCase
 
     private function makeState(MatchPhase $phase = MatchPhase::Normal): MatchStateData
     {
-        $state                   = new MatchStateData();
-        $state->homeTeamId       = 'home-id';
-        $state->awayTeamId       = 'away-id';
-        $state->possessionTeamId = 'home-id';
-        $state->defendingTeamId  = 'away-id';
-        $state->zone             = PitchZone::PenaltyArea;
-        $state->phase            = $phase;
+        $state = new MatchStateData(
+            homeTeamId: 'home-id',
+            awayTeamId: 'away-id',
+        );
+        $state->setZone(PitchZone::PenaltyArea);
+        $state->setPhase($phase);
         return $state;
     }
 

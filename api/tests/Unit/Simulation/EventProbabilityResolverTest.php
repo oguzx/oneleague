@@ -130,14 +130,13 @@ class EventProbabilityResolverTest extends TestCase
         float      $homeFatigue = 0.0,
         MatchPhase $phase      = MatchPhase::Normal,
     ): MatchStateData {
-        $state                   = new MatchStateData();
-        $state->homeTeamId       = 'home-id';
-        $state->awayTeamId       = 'away-id';
-        $state->possessionTeamId = 'home-id';
-        $state->defendingTeamId  = 'away-id';
-        $state->zone             = $zone;
-        $state->phase            = $phase;
-        $state->homeFatigue      = $homeFatigue;
+        $state = new MatchStateData(
+            homeTeamId: 'home-id',
+            awayTeamId: 'away-id',
+        );
+        $state->setZone($zone);
+        $state->setPhase($phase);
+        $state->setHomeFatigue($homeFatigue);
         return $state;
     }
 

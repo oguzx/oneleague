@@ -7,21 +7,21 @@ use App\Data\SimulationResultData;
 use App\Enums\FixtureStatus;
 use App\Exceptions\InvalidTournamentStateException;
 use App\Models\Fixture;
-use App\Models\MatchEvent;
 use App\Services\LeagueTableService;
+use App\Services\MatchEventPersistenceService;
 use App\Services\Simulation\MatchContextFactory;
 use App\Services\Simulation\MatchStateFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class PlayMatchAction
 {
     public function __construct(
-        private readonly MatchContextFactory  $contextFactory,
-        private readonly MatchStateFactory    $stateFactory,
-        private readonly SimulateMatchAction  $simulator,
-        private readonly LeagueTableService   $leagueTable,
+        private readonly MatchContextFactory           $contextFactory,
+        private readonly MatchStateFactory             $stateFactory,
+        private readonly SimulateMatchAction           $simulator,
+        private readonly LeagueTableService            $leagueTable,
+        private readonly MatchEventPersistenceService  $eventPersistence,
     ) {}
 
     /**
@@ -35,7 +35,7 @@ class PlayMatchAction
     {
         $this->guardPlayable($fixture);
 
-        $fixture->loadMissing(['homeTeam.stat', 'awayTeam.stat', 'group.teams']);
+        $fixture->loadMissing(['homeTeam.stat', 'awayTeam.stat', 'group.teams', 'group.fixtures']);
 
         $context = $this->contextFactory->build($fixture);
         $state   = $this->stateFactory->build($context);
@@ -43,7 +43,7 @@ class PlayMatchAction
 
         DB::transaction(function () use ($fixture, $result) {
             $this->persistMatchResult($fixture, $result);
-            $this->persistMatchEvents($result);
+            $this->eventPersistence->persist($result);
         });
 
         $table = $this->leagueTable->forGroup($fixture->group);
@@ -67,38 +67,10 @@ class PlayMatchAction
     private function persistMatchResult(Fixture $fixture, SimulationResultData $result): void
     {
         $fixture->update([
-            'status'     => FixtureStatus::Completed,
             'home_score' => $result->homeScore,
             'away_score' => $result->awayScore,
         ]);
-    }
 
-    private function persistMatchEvents(SimulationResultData $result): void
-    {
-        $now      = now();
-        $sequence = 0;
-        $rows     = [];
-
-        foreach ($result->events as $event) {
-            $rows[] = [
-                'id'               => (string) Str::uuid(),
-                'fixture_id'       => $result->fixtureId,
-                'minute'           => $event->minute,
-                'second'           => $event->second,
-                'tick_number'      => $event->tick,
-                'sequence'         => $sequence++,
-                'team_id'          => $event->teamId,
-                'opponent_team_id' => $event->opponentTeamId,
-                'event_type'       => $event->type->value,
-                'zone'             => $event->zone->value,
-                'payload'          => json_encode($event->payload),
-                'created_at'       => $now,
-                'updated_at'       => $now,
-            ];
-        }
-
-        if (!empty($rows)) {
-            MatchEvent::insert($rows);
-        }
+        $fixture->transitionTo(FixtureStatus::Completed);
     }
 }

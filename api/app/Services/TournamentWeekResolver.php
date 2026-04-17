@@ -59,4 +59,15 @@ class TournamentWeekResolver
     {
         return $this->resolveFirstPlayableWeek($tournamentId) === null;
     }
+
+    /**
+     * Returns the highest match_week in the tournament (i.e. total weeks).
+     */
+    public function resolveTotalWeeks(string $tournamentId): int
+    {
+        return (int) Fixture::query()
+            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
+            ->where('groups.tournament_id', $tournamentId)
+            ->max('fixtures.match_week');
+    }
 }

@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string         $id
+ * @property string         $tournament_id
+ * @property string         $name
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property-read Tournament                                                    $tournament
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Team>          $teams
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Fixture>       $fixtures
+ */
 class Group extends Model
 {
     use HasUuids;

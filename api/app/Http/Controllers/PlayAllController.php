@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Actions\PlayAllWeeksAction;
 use App\Exceptions\InvalidTournamentStateException;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tournament;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class PlayAllController extends Controller
 {
@@ -16,9 +18,16 @@ class PlayAllController extends Controller
         try {
             $this->action->execute($tournament);
         } catch (InvalidTournamentStateException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            return ApiResponse::error(
+                $e->getMessage(),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'SIMULATION_ALREADY_RUNNING'
+            );
         }
 
-        return response()->json(['message' => 'Simulation started.'], 202);
+        return ApiResponse::success(
+            ['message' => 'Simulation started.'],
+            Response::HTTP_ACCEPTED
+        );
     }
 }

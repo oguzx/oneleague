@@ -28,10 +28,10 @@ class SimulateMatchAction
         $timeline = $this->runKickoff($state, $context);
 
         for ($tick = 1; $tick <= MatchConstants::TOTAL_TICKS; $tick++) {
-            $this->advanceClock($tick, $state);
+            $state->advanceClock($tick);
 
             if ($tick === MatchConstants::HALF_TICKS + 1) {
-                $events = $this->applier->apply(MatchEventType::HalfTime, $state, $context);
+                $events   = $this->applier->apply(MatchEventType::HalfTime, $state, $context);
                 $timeline = array_merge($timeline, array_filter($events, fn($e) => $e->type->isVisible()));
             }
 
@@ -50,8 +50,8 @@ class SimulateMatchAction
             fixtureId:   $context->fixtureId,
             homeTeamId:  $context->homeTeamId,
             awayTeamId:  $context->awayTeamId,
-            homeScore:   $state->homeScore,
-            awayScore:   $state->awayScore,
+            homeScore:   $state->homeScore(),
+            awayScore:   $state->awayScore(),
             events:     $timeline,
             finalState: $state,
         );
@@ -61,13 +61,5 @@ class SimulateMatchAction
     private function runKickoff(MatchStateData $state, MatchContextData $context): array
     {
         return $this->applier->apply(MatchEventType::Kickoff, $state, $context);
-    }
-
-    private function advanceClock(int $tick, MatchStateData $state): void
-    {
-        $totalSeconds        = $tick * MatchConstants::TICK_SECONDS;
-        $state->currentTick  = $tick;
-        $state->currentMinute = (int) ($totalSeconds / 60);
-        $state->currentSecond = $totalSeconds % 60;
     }
 }

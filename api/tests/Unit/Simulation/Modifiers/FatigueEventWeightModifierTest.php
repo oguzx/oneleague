@@ -103,14 +103,13 @@ class FatigueEventWeightModifierTest extends TestCase
 
     private function makeState(float $homeFatigue = 0.0): MatchStateData
     {
-        $state                   = new MatchStateData();
-        $state->homeTeamId       = 'home-id';
-        $state->awayTeamId       = 'away-id';
-        $state->possessionTeamId = 'home-id';
-        $state->defendingTeamId  = 'away-id';
-        $state->zone             = PitchZone::MiddleThird;
-        $state->phase            = MatchPhase::Normal;
-        $state->homeFatigue      = $homeFatigue;
+        $state = new MatchStateData(
+            homeTeamId: 'home-id',
+            awayTeamId: 'away-id',
+        );
+        $state->setZone(PitchZone::MiddleThird);
+        $state->setPhase(MatchPhase::Normal);
+        $state->setHomeFatigue($homeFatigue);
         return $state;
     }
 

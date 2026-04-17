@@ -118,13 +118,12 @@ class StatEventWeightModifierTest extends TestCase
 
     private function makeState(): MatchStateData
     {
-        $state                   = new MatchStateData();
-        $state->homeTeamId       = 'home-id';
-        $state->awayTeamId       = 'away-id';
-        $state->possessionTeamId = 'home-id';
-        $state->defendingTeamId  = 'away-id';
-        $state->zone             = PitchZone::MiddleThird;
-        $state->phase            = MatchPhase::Normal;
+        $state = new MatchStateData(
+            homeTeamId: 'home-id',
+            awayTeamId: 'away-id',
+        );
+        $state->setZone(PitchZone::MiddleThird);
+        $state->setPhase(MatchPhase::Normal);
         return $state;
     }
 

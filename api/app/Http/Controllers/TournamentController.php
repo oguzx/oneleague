@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\FixtureStatus;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tournament;
 use App\Services\TournamentFormatter;
 use Illuminate\Http\JsonResponse;
@@ -32,7 +33,7 @@ class TournamentController extends Controller
             )
             ->values();
 
-        return response()->json([
+        return ApiResponse::success([
             'active' => $active ? $this->stub($active) : null,
             'past'   => $past->map(fn($t) => $this->stub($t))->values(),
         ]);
@@ -40,7 +41,8 @@ class TournamentController extends Controller
 
     public function show(Tournament $tournament): JsonResponse
     {
-        return response()->json($this->formatter->format($tournament));
+        // TODO: Replace on-the-fly computation with cached/aggregated data if performance becomes an issue
+        return ApiResponse::success($this->formatter->format($tournament));
     }
 
     private function stub(Tournament $t): array

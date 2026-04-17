@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Fixture;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tournament;
 use App\Services\TournamentWeekResolver;
 use Illuminate\Http\JsonResponse;
@@ -17,17 +17,13 @@ class SimulationStatusController extends Controller
         $tournament->refresh();
 
         $currentWeek = $this->resolver->resolveFirstPlayableWeek($tournament->id);
-
-        $totalWeeks = Fixture::query()
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournament->id)
-            ->max('fixtures.match_week');
+        $totalWeeks  = $this->resolver->resolveTotalWeeks($tournament->id);
 
         $batch = $tournament->simulation_batch_id
             ? Bus::findBatch($tournament->simulation_batch_id)
             : null;
 
-        return response()->json([
+        return ApiResponse::success([
             'status'       => $tournament->simulation_status,
             'current_week' => $currentWeek,
             'total_weeks'  => $totalWeeks,

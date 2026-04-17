@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Actions\PlayWeekAction;
 use App\Exceptions\InvalidTournamentStateException;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tournament;
 use App\Services\TournamentFormatter;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+
 class PlayWeekController extends Controller
 {
     public function __construct(
@@ -19,9 +22,13 @@ class PlayWeekController extends Controller
         try {
             $this->action->execute($tournament);
         } catch (InvalidTournamentStateException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            return ApiResponse::error(
+                $e->getMessage(),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'INVALID_STATE'
+            );
         }
 
-        return response()->json($this->formatter->format($tournament));
+        return ApiResponse::success($this->formatter->format($tournament));
     }
 }

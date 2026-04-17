@@ -29,7 +29,7 @@ class LastEventContextWeightModifier implements EventWeightModifierInterface
         MatchStateData   $state,
         MatchContextData $context,
     ): void {
-        match($state->phase) {
+        match($state->phase()) {
             MatchPhase::CornerKick => $this->applyCornerKickContext($bag),
             MatchPhase::FreeKick   => $this->applyFreeKickContext($bag),
             default                => null,
@@ -43,7 +43,7 @@ class LastEventContextWeightModifier implements EventWeightModifierInterface
     private function applyCornerKickContext(EventWeightBag $bag): void
     {
         $bag->scale(MatchEventType::ShotAttempt,   1.60);
-        $bag->scale(MatchEventType::FoulCommitted, 1.30);
+        $bag->scale(MatchEventType::FoulCommitted, 0.90);
         $bag->scale(MatchEventType::PassCompleted, 0.80);
     }
 

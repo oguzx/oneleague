@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\ApiResponse;
 use App\Models\Team;
 use Illuminate\Http\JsonResponse;
 
@@ -13,6 +14,6 @@ class TeamController extends Controller
             ->select('id', 'name', 'logo_url')
             ->get();
 
-        return response()->json($teams);
+        return ApiResponse::success($teams);
     }
 }

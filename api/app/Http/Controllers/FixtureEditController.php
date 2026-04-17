@@ -3,32 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Enums\FixtureStatus;
+use App\Http\Requests\UpdateFixtureRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\Fixture;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FixtureEditController extends Controller
 {
-    public function __invoke(Request $request, Fixture $fixture): JsonResponse
+    public function __invoke(UpdateFixtureRequest $request, Fixture $fixture): JsonResponse
     {
         if ($fixture->status !== FixtureStatus::Completed) {
-            return response()->json(['message' => 'Only completed fixtures can be edited.'], 422);
+            return ApiResponse::error(
+                'Only completed fixtures can be edited.',
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'INVALID_STATE'
+            );
         }
-
-        $data = $request->validate([
-            'home_score' => ['required', 'integer', 'min:0', 'max:99'],
-            'away_score' => ['required', 'integer', 'min:0', 'max:99'],
-        ]);
 
         $fixture->events()->delete();
 
         $fixture->update([
-            'home_score'         => $data['home_score'],
-            'away_score'         => $data['away_score'],
+            'home_score'         => $request->integer('home_score'),
+            'away_score'         => $request->integer('away_score'),
             'is_manually_edited' => true,
             'manually_edited_at' => now(),
         ]);
 
-        return response()->json(['message' => 'Fixture updated.']);
+        return ApiResponse::success(['message' => 'Fixture updated.']);
     }
 }

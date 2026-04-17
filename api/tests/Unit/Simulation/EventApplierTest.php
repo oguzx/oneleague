@@ -6,14 +6,13 @@ use App\Data\MatchContextData;
 use App\Data\MatchStateData;
 use App\Data\TeamStrengthProfileData;
 use App\Enums\MatchEventType;
-use App\Enums\MatchPhase;
 use App\Enums\PitchZone;
 use App\Services\Simulation\EventApplier;
 use Tests\TestCase;
 
 class EventApplierTest extends TestCase
 {
-    private EventApplier  $applier;
+    private EventApplier     $applier;
     private MatchContextData $context;
 
     protected function setUp(): void
@@ -26,103 +25,105 @@ class EventApplierTest extends TestCase
     public function test_goal_increments_home_score_when_home_has_possession(): void
     {
         $state = $this->makeState();
-        $state->possessionTeamId = $state->homeTeamId;
+        $state->setPossessionTeam($state->homeTeamId());
+        $state->setDefendingTeam($state->awayTeamId());
 
         $this->applier->apply(MatchEventType::Goal, $state, $this->context);
 
-        $this->assertEquals(1, $state->homeScore);
-        $this->assertEquals(0, $state->awayScore);
+        $this->assertEquals(1, $state->homeScore());
+        $this->assertEquals(0, $state->awayScore());
     }
 
     public function test_goal_increments_away_score_when_away_has_possession(): void
     {
         $state = $this->makeState();
-        $state->possessionTeamId = $state->awayTeamId;
-        $state->defendingTeamId  = $state->homeTeamId;
+        $state->setPossessionTeam($state->awayTeamId());
+        $state->setDefendingTeam($state->homeTeamId());
 
         $this->applier->apply(MatchEventType::Goal, $state, $this->context);
 
-        $this->assertEquals(0, $state->homeScore);
-        $this->assertEquals(1, $state->awayScore);
+        $this->assertEquals(0, $state->homeScore());
+        $this->assertEquals(1, $state->awayScore());
     }
 
     public function test_score_never_goes_negative(): void
     {
         $state = $this->makeState();
         // No negative score possible since we only increment
-        $this->assertEquals(0, $state->homeScore);
-        $this->assertEquals(0, $state->awayScore);
+        $this->assertEquals(0, $state->homeScore());
+        $this->assertEquals(0, $state->awayScore());
     }
 
     public function test_pass_failed_switches_possession(): void
     {
         $state = $this->makeState();
-        $originalPossession = $state->possessionTeamId;
+        $originalPossession = $state->possessionTeamId();
 
         $this->applier->apply(MatchEventType::PassFailed, $state, $this->context);
 
-        $this->assertNotEquals($originalPossession, $state->possessionTeamId);
+        $this->assertNotEquals($originalPossession, $state->possessionTeamId());
     }
 
     public function test_dribble_failed_switches_possession(): void
     {
         $state = $this->makeState();
-        $originalPossession = $state->possessionTeamId;
+        $originalPossession = $state->possessionTeamId();
 
         $this->applier->apply(MatchEventType::DribbleFailed, $state, $this->context);
 
-        $this->assertNotEquals($originalPossession, $state->possessionTeamId);
+        $this->assertNotEquals($originalPossession, $state->possessionTeamId());
     }
 
     public function test_interception_switches_possession(): void
     {
         $state = $this->makeState();
-        $originalPossession = $state->possessionTeamId;
+        $originalPossession = $state->possessionTeamId();
 
         $this->applier->apply(MatchEventType::Interception, $state, $this->context);
 
-        $this->assertNotEquals($originalPossession, $state->possessionTeamId);
+        $this->assertNotEquals($originalPossession, $state->possessionTeamId());
     }
 
     public function test_pass_completed_does_not_switch_possession(): void
     {
         $state = $this->makeState();
-        $original = $state->possessionTeamId;
+        $original = $state->possessionTeamId();
 
         $this->applier->apply(MatchEventType::PassCompleted, $state, $this->context);
 
-        $this->assertEquals($original, $state->possessionTeamId);
+        $this->assertEquals($original, $state->possessionTeamId());
     }
 
     public function test_dribble_success_advances_zone(): void
     {
-        $state       = $this->makeState();
-        $state->zone = PitchZone::MiddleThird;
+        $state = $this->makeState();
+        $state->setZone(PitchZone::MiddleThird);
 
         $this->applier->apply(MatchEventType::DribbleSuccess, $state, $this->context);
 
-        $this->assertEquals(PitchZone::AttackingThird, $state->zone);
+        $this->assertEquals(PitchZone::AttackingThird, $state->zone());
     }
 
     public function test_kickoff_resets_zone_to_middle_third(): void
     {
-        $state       = $this->makeState();
-        $state->zone = PitchZone::PenaltyArea;
+        $state = $this->makeState();
+        $state->setZone(PitchZone::PenaltyArea);
 
         $this->applier->apply(MatchEventType::Kickoff, $state, $this->context);
 
-        $this->assertEquals(PitchZone::MiddleThird, $state->zone);
+        $this->assertEquals(PitchZone::MiddleThird, $state->zone());
     }
 
     public function test_half_time_switches_possession_to_away(): void
     {
         $state = $this->makeState();
-        $state->possessionTeamId = $state->homeTeamId;
+        $state->setPossessionTeam($state->homeTeamId());
+        $state->setDefendingTeam($state->awayTeamId());
 
         $this->applier->apply(MatchEventType::HalfTime, $state, $this->context);
 
-        $this->assertEquals($state->awayTeamId, $state->possessionTeamId);
-        $this->assertEquals(2, $state->currentHalf);
+        $this->assertEquals($state->awayTeamId(), $state->possessionTeamId());
+        $this->assertEquals(2, $state->currentHalf());
     }
 
     public function test_full_time_marks_match_as_finished(): void
@@ -131,14 +132,14 @@ class EventApplierTest extends TestCase
 
         $this->applier->apply(MatchEventType::FullTime, $state, $this->context);
 
-        $this->assertTrue($state->isFinished);
+        $this->assertTrue($state->isFinished());
     }
 
     public function test_shot_attempt_produces_shot_and_outcome_events(): void
     {
         mt_srand(42); // deterministic
         $state = $this->makeState();
-        $state->zone = PitchZone::PenaltyArea;
+        $state->setZone(PitchZone::PenaltyArea);
 
         $events = $this->applier->apply(MatchEventType::ShotAttempt, $state, $this->context);
 
@@ -159,13 +160,11 @@ class EventApplierTest extends TestCase
 
     private function makeState(): MatchStateData
     {
-        $state = new MatchStateData();
-        $state->homeTeamId       = 'home-id';
-        $state->awayTeamId       = 'away-id';
-        $state->possessionTeamId = 'home-id';
-        $state->defendingTeamId  = 'away-id';
-        $state->zone             = PitchZone::MiddleThird;
-        $state->phase            = MatchPhase::Normal;
+        $state = new MatchStateData(
+            homeTeamId: 'home-id',
+            awayTeamId: 'away-id',
+        );
+        $state->setZone(PitchZone::MiddleThird);
         return $state;
     }
 

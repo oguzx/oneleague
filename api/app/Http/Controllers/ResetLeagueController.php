@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\ResetLeagueAction;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tournament;
 use App\Services\TournamentFormatter;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +19,6 @@ class ResetLeagueController extends Controller
     {
         $this->action->execute($tournament);
 
-        return response()->json($this->formatter->format($tournament));
+        return ApiResponse::success($this->formatter->format($tournament));
     }
 }

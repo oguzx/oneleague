@@ -3,11 +3,31 @@
 namespace App\Models;
 
 use App\Enums\FixtureStatus;
+use App\Exceptions\InvalidTournamentStateException;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string          $id
+ * @property string          $group_id
+ * @property string          $home_team_id
+ * @property string          $away_team_id
+ * @property int             $match_week
+ * @property FixtureStatus   $status
+ * @property int|null        $home_score
+ * @property int|null        $away_score
+ * @property bool            $is_manually_edited
+ * @property \Carbon\Carbon|null $manually_edited_at
+ * @property \Carbon\Carbon  $created_at
+ * @property \Carbon\Carbon  $updated_at
+ *
+ * @property-read Group                                                          $group
+ * @property-read Team                                                           $homeTeam
+ * @property-read Team                                                           $awayTeam
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, MatchEvent>     $events
+ */
 class Fixture extends Model
 {
     use HasUuids;
@@ -53,5 +73,21 @@ class Fixture extends Model
     public function isPlayable(): bool
     {
         return $this->status === FixtureStatus::Scheduled;
+    }
+
+    /**
+     * Transition fixture to a new status, enforcing allowed transitions.
+     *
+     * @throws InvalidTournamentStateException
+     */
+    public function transitionTo(FixtureStatus $new): void
+    {
+        if (!$this->status->canTransitionTo($new)) {
+            throw new InvalidTournamentStateException(
+                "Cannot transition fixture from [{$this->status->value}] to [{$new->value}]."
+            );
+        }
+
+        $this->update(['status' => $new]);
     }
 }

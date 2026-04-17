@@ -6,6 +6,7 @@ use App\Exceptions\InvalidTournamentStateException;
 use App\Models\Team;
 use App\Models\TeamStat;
 use App\Services\DrawService;
+use App\Services\DrawValidator;
 use App\Services\FixtureService;
 use App\Services\GroupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,7 +21,11 @@ class DrawServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DrawService(new GroupService(), new FixtureService());
+        $this->service = new DrawService(
+            new DrawValidator(),
+            new GroupService(),
+            new FixtureService(),
+        );
     }
 
     /** Create $perPot teams per pot across $pots pots, with unique country codes. */

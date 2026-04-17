@@ -30,8 +30,8 @@ class EventProbabilityResolver
     /** @return array<string, float> */
     public function resolve(MatchStateData $state, MatchContextData $context): array
     {
-        $candidates = $this->candidateResolver->resolve($state->zone, $state->phase);
-        $bag        = $this->baseWeightResolver->resolve($candidates, $state->zone, $state->phase);
+        $candidates = $this->candidateResolver->resolve($state->zone(), $state->phase());
+        $bag        = $this->baseWeightResolver->resolve($candidates, $state->zone(), $state->phase());
 
         $this->modifierPipeline->run($bag, $state, $context);
 

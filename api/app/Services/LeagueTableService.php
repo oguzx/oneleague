@@ -6,6 +6,7 @@ use App\Data\LeagueTableRowData;
 use App\Enums\FixtureStatus;
 use App\Models\Group;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class LeagueTableService
 {
@@ -19,6 +20,42 @@ class LeagueTableService
     {
         $group->loadMissing(['teams', 'fixtures']);
 
+        $lastUpdated = $group->fixtures->max('updated_at')?->timestamp ?? 0;
+        $cacheKey    = "standings:{$group->id}:{$lastUpdated}";
+
+        $rows = Cache::remember($cacheKey, 300, fn() =>
+            $this->compute($group)->map(fn(LeagueTableRowData $r) => [
+                'teamId'         => $r->teamId,
+                'teamName'       => $r->teamName,
+                'logoUrl'        => $r->logoUrl,
+                'played'         => $r->played,
+                'won'            => $r->won,
+                'drawn'          => $r->drawn,
+                'lost'           => $r->lost,
+                'goalsFor'       => $r->goalsFor,
+                'goalsAgainst'   => $r->goalsAgainst,
+                'goalDifference' => $r->goalDifference,
+                'points'         => $r->points,
+            ])->all()
+        );
+
+        return collect($rows)->map(fn($r) => new LeagueTableRowData(
+            teamId:         $r['teamId'],
+            teamName:       $r['teamName'],
+            logoUrl:        $r['logoUrl'],
+            played:         $r['played'],
+            won:            $r['won'],
+            drawn:          $r['drawn'],
+            lost:           $r['lost'],
+            goalsFor:       $r['goalsFor'],
+            goalsAgainst:   $r['goalsAgainst'],
+            goalDifference: $r['goalDifference'],
+            points:         $r['points'],
+        ));
+    }
+
+    private function compute(Group $group): Collection
+    {
         // Use a plain PHP array for mutation — Collection::offsetGet returns a copy,
         // so in-place increments on a Collection have no effect.
         $rows = $group->teams->mapWithKeys(fn($team) => [

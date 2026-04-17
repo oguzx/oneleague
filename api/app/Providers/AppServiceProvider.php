@@ -46,11 +46,11 @@ class AppServiceProvider extends ServiceProvider
      */
     private function registerModifierPipeline(): void
     {
-        $this->app->bind(EventWeightModifierPipeline::class, fn() => new EventWeightModifierPipeline([
-            new LastEventContextWeightModifier(),
-            new StatEventWeightModifier(),
-            new FatigueEventWeightModifier(),
-            new MomentumEventWeightModifier(),
+        $this->app->bind(EventWeightModifierPipeline::class, fn($app) => new EventWeightModifierPipeline([
+            $app->make(LastEventContextWeightModifier::class),
+            $app->make(StatEventWeightModifier::class),
+            $app->make(FatigueEventWeightModifier::class),
+            $app->make(MomentumEventWeightModifier::class),
         ]));
     }
 }

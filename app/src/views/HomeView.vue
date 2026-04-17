@@ -28,11 +28,10 @@ async function draw() {
   drawing.value = true
   error.value   = null
   try {
-    await tournamentApi.draw()
-    await load()
+    const result = await tournamentApi.draw()
+    router.push(`/league/${result.tournament_id}`)
   } catch (e) {
     error.value = e.response?.data?.message ?? 'Draw failed.'
-  } finally {
     drawing.value = false
   }
 }

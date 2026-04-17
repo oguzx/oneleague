@@ -21,7 +21,9 @@ class TournamentFormatter
             'groups.teams',
             'groups.fixtures.homeTeam',
             'groups.fixtures.awayTeam',
-            'groups.fixtures.events',
+            'groups.fixtures.events' => fn($q) => $q->select([
+                'fixture_id', 'minute', 'second', 'event_type', 'zone', 'team_id', 'payload',
+            ]),
         ]);
 
         $allFixtures = $tournament->groups->flatMap->fixtures;

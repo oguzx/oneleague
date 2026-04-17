@@ -63,7 +63,7 @@ class EventBaseWeightResolver
                 MatchEventType::PassFailed->value     => 0.12,
                 MatchEventType::DribbleSuccess->value => 0.09,
                 MatchEventType::DribbleFailed->value  => 0.06,
-                MatchEventType::FoulCommitted->value  => 0.04,
+                MatchEventType::FoulCommitted->value  => 0.02,
                 MatchEventType::Interception->value   => 0.08,
                 MatchEventType::TackleWon->value      => 0.06,
             ],
@@ -72,7 +72,7 @@ class EventBaseWeightResolver
                 MatchEventType::PassFailed->value     => 0.10,
                 MatchEventType::DribbleSuccess->value => 0.12,
                 MatchEventType::DribbleFailed->value  => 0.05,
-                MatchEventType::FoulCommitted->value  => 0.03,
+                MatchEventType::FoulCommitted->value  => 0.015,
                 MatchEventType::Interception->value   => 0.09,
                 MatchEventType::TackleWon->value      => 0.06,
                 MatchEventType::ShotAttempt->value    => 0.01,
@@ -82,7 +82,7 @@ class EventBaseWeightResolver
                 MatchEventType::PassFailed->value     => 0.09,
                 MatchEventType::DribbleSuccess->value => 0.13,
                 MatchEventType::DribbleFailed->value  => 0.05,
-                MatchEventType::FoulCommitted->value  => 0.06,
+                MatchEventType::FoulCommitted->value  => 0.03,
                 MatchEventType::Interception->value   => 0.08,
                 MatchEventType::TackleWon->value      => 0.07,
                 MatchEventType::ShotAttempt->value    => 0.14,
@@ -92,7 +92,7 @@ class EventBaseWeightResolver
                 MatchEventType::PassFailed->value     => 0.08,
                 MatchEventType::DribbleSuccess->value => 0.06,
                 MatchEventType::DribbleFailed->value  => 0.05,
-                MatchEventType::FoulCommitted->value  => 0.08,
+                MatchEventType::FoulCommitted->value  => 0.04,
                 MatchEventType::Interception->value   => 0.07,
                 MatchEventType::TackleWon->value      => 0.09,
                 MatchEventType::ShotAttempt->value    => 0.32,
@@ -109,10 +109,10 @@ class EventBaseWeightResolver
     private function cornerKickWeights(): array
     {
         return [
-            MatchEventType::ShotAttempt->value    => 0.50,
-            MatchEventType::PassCompleted->value  => 0.25,
-            MatchEventType::FoulCommitted->value  => 0.15,
-            MatchEventType::Interception->value   => 0.10,
+            MatchEventType::ShotAttempt->value    => 0.55,
+            MatchEventType::PassCompleted->value  => 0.30,
+            MatchEventType::FoulCommitted->value  => 0.07,
+            MatchEventType::Interception->value   => 0.08,
         ];
     }
 
@@ -124,10 +124,10 @@ class EventBaseWeightResolver
     private function freeKickWeights(): array
     {
         return [
-            MatchEventType::PassCompleted->value  => 0.45,
-            MatchEventType::ShotAttempt->value    => 0.35,
-            MatchEventType::FoulCommitted->value  => 0.10,
-            MatchEventType::DribbleSuccess->value => 0.10,
+            MatchEventType::PassCompleted->value  => 0.50,
+            MatchEventType::ShotAttempt->value    => 0.38,
+            MatchEventType::FoulCommitted->value  => 0.05,
+            MatchEventType::DribbleSuccess->value => 0.07,
         ];
     }
 }

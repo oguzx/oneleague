@@ -7,8 +7,10 @@ use App\Data\LeagueTableRowData;
 use App\Data\MatchEventData;
 use App\Data\SimulationResultData;
 use App\Exceptions\InvalidTournamentStateException;
+use App\Http\Responses\ApiResponse;
 use App\Models\Fixture;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class PlayMatchController extends Controller
 {
@@ -19,10 +21,14 @@ class PlayMatchController extends Controller
         try {
             ['result' => $result, 'table' => $table] = $this->action->execute($fixture);
         } catch (InvalidTournamentStateException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            return ApiResponse::error(
+                $e->getMessage(),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'INVALID_STATE'
+            );
         }
 
-        return response()->json($this->formatResponse($result, $table), 200);
+        return ApiResponse::success($this->formatResponse($result, $table));
     }
 
     private function formatResponse(SimulationResultData $result, $table): array

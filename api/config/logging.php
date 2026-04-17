@@ -118,6 +118,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'errors' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/errors.log'),
+            'level'  => 'error',
+            'days'   => 30,
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,

@@ -9,7 +9,9 @@ use App\Models\MatchEvent;
 use App\Models\Team;
 use App\Models\TeamStat;
 use App\Models\Tournament;
+use App\Services\LeagueTableService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -65,7 +67,11 @@ class PlayMatchControllerTest extends TestCase
         $response = $this->postJson("/api/fixtures/{$fixture->id}/play");
 
         $response->assertStatus(200)
-                 ->assertJsonStructure(['fixture_id', 'score', 'timeline', 'standings']);
+                 ->assertJson(['success' => true])
+                 ->assertJsonStructure([
+                     'success',
+                     'data' => ['fixture_id', 'score', 'timeline', 'standings'],
+                 ]);
     }
 
     public function test_already_played_match_cannot_be_simulated_again(): void
@@ -74,7 +80,9 @@ class PlayMatchControllerTest extends TestCase
 
         $response = $this->postJson("/api/fixtures/{$fixture->id}/play");
 
-        $response->assertStatus(422)->assertJsonStructure(['message']);
+        $response->assertStatus(422)
+                 ->assertJson(['success' => false, 'code' => 'INVALID_STATE'])
+                 ->assertJsonStructure(['success', 'message', 'code', 'errors']);
     }
 
     public function test_simulated_match_persists_final_score(): void
@@ -120,9 +128,19 @@ class PlayMatchControllerTest extends TestCase
         $response = $this->postJson("/api/fixtures/{$fixture->id}/play");
 
         $response->assertStatus(200);
-        $standings = $response->json('standings');
-        $this->assertCount(2, $standings); // home + away
-        $this->assertEquals(1, $standings[0]['played']);
+        $response->assertJsonStructure(['data' => ['standings']]);
+        $this->assertCount(2, $response->json('data.standings')); // home + away
+
+        // Flush any cached standings that were computed against stale relation
+        // data during the request lifecycle, then re-query the group so the
+        // table reflects the freshly persisted fixture row.
+        Cache::flush();
+        $group     = Group::with(['teams', 'fixtures'])->findOrFail($fixture->group_id);
+        $standings = app(LeagueTableService::class)->forGroup($group)->values();
+
+        $this->assertCount(2, $standings);
+        $this->assertEquals(1, $standings[0]->played);
+        $this->assertEquals(1, $standings[1]->played);
     }
 
     public function test_score_is_never_negative(): void

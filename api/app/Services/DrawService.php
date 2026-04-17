@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class DrawService
 {
-    private const TEAMS_PER_GROUP = 4;
-
     public function __construct(
-        private readonly GroupService $groupService,
-        private readonly FixtureService $fixtureService,
+        private readonly DrawValidator   $validator,
+        private readonly GroupService    $groupService,
+        private readonly FixtureService  $fixtureService,
     ) {}
 
     public function draw(): Tournament
@@ -31,10 +30,10 @@ class DrawService
 
     private function buildValidatedPots(Collection $teams): Collection
     {
-        $this->validateTeams($teams);
+        $this->validator->validate($teams);
 
         return $teams
-            ->groupBy(fn (Team $team) => $team->stat->pot)
+            ->groupBy(fn(Team $team) => $team->stat->pot)
             ->sortKeys();
     }
 
@@ -88,7 +87,7 @@ class DrawService
             return true;
         }
 
-        $team = $teams[$index];
+        $team         = $teams[$index];
         $groupIndexes = range(0, count($teams) - 1);
 
         shuffle($groupIndexes);
@@ -104,10 +103,20 @@ class DrawService
                 return true;
             }
 
+            // Recursive placement failed — undo and try the next group
             $this->removeTeam($groupIndex, $assignment, $groupCountries);
         }
 
         return false;
+    }
+
+    private function removeTeam(
+        int $groupIndex,
+        array &$assignment,
+        array &$groupCountries
+    ): void {
+        $assignment[$groupIndex] = null;
+        array_pop($groupCountries[$groupIndex]);
     }
 
     private function canPlaceTeam(
@@ -129,17 +138,8 @@ class DrawService
         array &$assignment,
         array &$groupCountries
     ): void {
-        $assignment[$groupIndex] = $team;
+        $assignment[$groupIndex]      = $team;
         $groupCountries[$groupIndex][] = $team->country_code;
-    }
-
-    private function removeTeam(
-        int $groupIndex,
-        array &$assignment,
-        array &$groupCountries
-    ): void {
-        $assignment[$groupIndex] = null;
-        array_pop($groupCountries[$groupIndex]);
     }
 
     private function persistTournament(array $groupTeams): Tournament
@@ -162,47 +162,5 @@ class DrawService
 
             return $tournament->load('groups.teams.stat', 'groups.fixtures');
         });
-    }
-
-    private function validateTeams(Collection $teams): void
-    {
-        if ($teams->isEmpty()) {
-            throw new InvalidTournamentStateException('No teams found.');
-        }
-
-        $missingStats = $teams->filter(fn (Team $t) => $t->stat === null);
-
-        if ($missingStats->isNotEmpty()) {
-            $names = $missingStats->pluck('name')->join(', ');
-            throw new InvalidTournamentStateException("Teams missing stats: {$names}");
-        }
-
-        $pots = $teams->groupBy(fn (Team $t) => $t->stat->pot);
-
-        if ($pots->count() !== self::TEAMS_PER_GROUP) {
-            throw new InvalidTournamentStateException('Exactly 4 pots are required.');
-        }
-
-        $this->validatePotSizes($pots);
-        $this->validatePotSequence($pots);
-    }
-
-    private function validatePotSizes(Collection $pots): void
-    {
-        $sizes = $pots->map(fn (Collection $pot) => $pot->count())->unique();
-
-        if ($sizes->count() > 1) {
-            throw new InvalidTournamentStateException('All pots must have equal team counts.');
-        }
-    }
-
-    private function validatePotSequence(Collection $pots): void
-    {
-        $potNumbers = $pots->keys()->map(fn ($k) => (int) $k)->sort()->values();
-        $expected = range(1, self::TEAMS_PER_GROUP);
-
-        if ($potNumbers->all() !== $expected) {
-            throw new InvalidTournamentStateException('Pot numbers must be consecutive.');
-        }
     }
 }
