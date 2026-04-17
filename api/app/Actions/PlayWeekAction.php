@@ -30,11 +30,9 @@ class PlayWeekAction
         }
 
         $weekFixtures = Fixture::with(['homeTeam.stat', 'awayTeam.stat'])
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournament->id)
-            ->where('fixtures.match_week', $currentWeek)
-            ->where('fixtures.status', FixtureStatus::Scheduled->value)
-            ->select('fixtures.*')
+            ->where('tournament_id', $tournament->id)
+            ->where('match_week', $currentWeek)
+            ->where('status', FixtureStatus::Scheduled->value)
             ->get();
 
         foreach ($weekFixtures as $fixture) {

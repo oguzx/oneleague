@@ -31,15 +31,19 @@ class SimulateMatchAction
             $state->advanceClock($tick);
 
             if ($tick === MatchConstants::HALF_TICKS + 1) {
-                $events   = $this->applier->apply(MatchEventType::HalfTime, $state, $context);
-                $timeline = array_merge($timeline, array_filter($events, fn($e) => $e->type->isVisible()));
+                $events = $this->applier->apply(MatchEventType::HalfTime, $state, $context);
+                foreach (array_filter($events, fn($e) => $e->type->isVisible()) as $e) {
+                    $timeline[] = $e;
+                }
             }
 
             $decision = $this->selector->select($state, $context);
             $produced = $this->applier->apply($decision->event, $state, $context);
 
             if ($decision->isVisible) {
-                $timeline = array_merge($timeline, array_filter($produced, fn($e) => $e->type->isVisible()));
+                foreach (array_filter($produced, fn($e) => $e->type->isVisible()) as $e) {
+                    $timeline[] = $e;
+                }
             }
         }
 

@@ -30,12 +30,13 @@ class PlayMatchControllerTest extends TestCase
         $group->teams()->attach([$home->id, $away->id]);
 
         return Fixture::create([
-            'id'           => (string) Str::uuid(),
-            'group_id'     => $group->id,
-            'home_team_id' => $home->id,
-            'away_team_id' => $away->id,
-            'match_week'   => 1,
-            'status'       => $status,
+            'id'              => (string) Str::uuid(),
+            'tournament_id'   => $tournament->id,
+            'group_id'        => $group->id,
+            'home_team_id'    => $home->id,
+            'away_team_id'    => $away->id,
+            'match_week'      => 1,
+            'status'          => $status,
         ]);
     }
 

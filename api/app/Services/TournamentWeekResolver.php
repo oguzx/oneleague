@@ -19,10 +19,9 @@ class TournamentWeekResolver
     public function resolveFirstPlayableWeek(string $tournamentId): ?int
     {
         return Fixture::query()
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournamentId)
-            ->where('fixtures.status', '!=', FixtureStatus::Completed->value)
-            ->min('fixtures.match_week');
+            ->where('tournament_id', $tournamentId)
+            ->where('status', '!=', FixtureStatus::Completed->value)
+            ->min('match_week');
     }
 
     /**
@@ -31,10 +30,9 @@ class TournamentWeekResolver
     public function isWeekCompleted(string $tournamentId, int $week): bool
     {
         return !Fixture::query()
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournamentId)
-            ->where('fixtures.match_week', $week)
-            ->where('fixtures.status', '!=', FixtureStatus::Completed->value)
+            ->where('tournament_id', $tournamentId)
+            ->where('match_week', $week)
+            ->where('status', '!=', FixtureStatus::Completed->value)
             ->exists();
     }
 
@@ -45,11 +43,10 @@ class TournamentWeekResolver
     public function resolveNextPlayableWeek(string $tournamentId, int $afterWeek): ?int
     {
         return Fixture::query()
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournamentId)
-            ->where('fixtures.match_week', '>', $afterWeek)
-            ->where('fixtures.status', '!=', FixtureStatus::Completed->value)
-            ->min('fixtures.match_week');
+            ->where('tournament_id', $tournamentId)
+            ->where('match_week', '>', $afterWeek)
+            ->where('status', '!=', FixtureStatus::Completed->value)
+            ->min('match_week');
     }
 
     /**
@@ -66,8 +63,30 @@ class TournamentWeekResolver
     public function resolveTotalWeeks(string $tournamentId): int
     {
         return (int) Fixture::query()
-            ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-            ->where('groups.tournament_id', $tournamentId)
-            ->max('fixtures.match_week');
+            ->where('tournament_id', $tournamentId)
+            ->max('match_week');
+    }
+
+    /**
+     * Returns current and total weeks in a single query — use this on hot
+     * poll endpoints instead of calling resolveFirstPlayableWeek + resolveTotalWeeks separately.
+     *
+     * @return array{current_week: int|null, total_weeks: int}
+     */
+    public function resolveWeekSummary(string $tournamentId): array
+    {
+        $row = Fixture::query()
+            ->where('tournament_id', $tournamentId)
+            ->selectRaw(
+                'MIN(CASE WHEN status != ? THEN match_week END) AS current_week,
+                 MAX(match_week) AS total_weeks',
+                [FixtureStatus::Completed->value]
+            )
+            ->first();
+
+        return [
+            'current_week' => $row?->current_week !== null ? (int) $row->current_week : null,
+            'total_weeks'  => (int) ($row?->total_weeks ?? 0),
+        ];
     }
 }

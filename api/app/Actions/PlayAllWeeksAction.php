@@ -52,12 +52,10 @@ class PlayAllWeeksAction
 
             $tid      = $tournament->id;
             $fixtures = Fixture::query()
-                ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-                ->where('groups.tournament_id', $tid)
-                ->where('fixtures.match_week', $firstWeek)
-                ->where('fixtures.status', FixtureStatus::Scheduled->value)
-                ->select('fixtures.id')
-                ->pluck('fixtures.id');
+                ->where('tournament_id', $tid)
+                ->where('match_week', $firstWeek)
+                ->where('status', FixtureStatus::Scheduled->value)
+                ->pluck('id');
 
             $jobs = $fixtures->map(fn($id) => new RunSingleFixtureSimulationJob($id))->all();
 

@@ -63,12 +63,10 @@ class AdvanceTournamentWeekJob implements ShouldQueue
 
             $tid      = $this->tournamentId;
             $fixtures = Fixture::query()
-                ->join('groups', 'groups.id', '=', 'fixtures.group_id')
-                ->where('groups.tournament_id', $tid)
-                ->where('fixtures.match_week', $nextWeek)
-                ->where('fixtures.status', FixtureStatus::Scheduled->value)
-                ->select('fixtures.id')
-                ->pluck('fixtures.id');
+                ->where('tournament_id', $tid)
+                ->where('match_week', $nextWeek)
+                ->where('status', FixtureStatus::Scheduled->value)
+                ->pluck('id');
 
             if ($fixtures->isEmpty()) {
                 // Edge case: week exists but has no playable fixtures — skip to next

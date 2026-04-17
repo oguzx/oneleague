@@ -16,8 +16,8 @@ class SimulationStatusController extends Controller
     {
         $tournament->refresh();
 
-        $currentWeek = $this->resolver->resolveFirstPlayableWeek($tournament->id);
-        $totalWeeks  = $this->resolver->resolveTotalWeeks($tournament->id);
+        ['current_week' => $currentWeek, 'total_weeks' => $totalWeeks] =
+            $this->resolver->resolveWeekSummary($tournament->id);
 
         $batch = $tournament->simulation_batch_id
             ? Bus::findBatch($tournament->simulation_batch_id)

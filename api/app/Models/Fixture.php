@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string          $id
+ * @property string          $tournament_id
  * @property string          $group_id
  * @property string          $home_team_id
  * @property string          $away_team_id
@@ -35,6 +36,7 @@ class Fixture extends Model
     use HasUuids;
 
     protected $fillable = [
+        'tournament_id',
         'group_id',
         'home_team_id',
         'away_team_id',

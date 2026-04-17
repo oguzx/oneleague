@@ -33,14 +33,15 @@ class FixtureService
 
         Fixture::insert(
             $schedule->map(fn($f) => [
-                'id'           => (string) Str::uuid(),
-                'group_id'     => $group->id,
-                'home_team_id' => $f['home']->id,
-                'away_team_id' => $f['away']->id,
-                'match_week'   => $f['week'],
-                'status'       => FixtureStatus::Scheduled->value,
-                'created_at'   => $now,
-                'updated_at'   => $now,
+                'id'              => (string) Str::uuid(),
+                'tournament_id'   => $group->tournament_id,
+                'group_id'        => $group->id,
+                'home_team_id'    => $f['home']->id,
+                'away_team_id'    => $f['away']->id,
+                'match_week'      => $f['week'],
+                'status'          => FixtureStatus::Scheduled->value,
+                'created_at'      => $now,
+                'updated_at'      => $now,
             ])->all()
         );
     }
