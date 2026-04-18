@@ -321,11 +321,18 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
 /* Split event row */
 .tl2-row {
   display: grid;
-  grid-template-columns: 1fr 38px 1fr;
+  grid-template-columns: 36px 1fr 38px 1fr 36px;
   align-items: center;
   min-height: 26px;
   padding: 3px 0;
   border-bottom: 1px solid rgba(255,255,255,.03);
+}
+
+.tl2-zone-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
 }
 .tl2-row--alt  { background: rgba(255,255,255,.015); }
 .tl2-row--goal { background: rgba(232,184,75,.10);  }
@@ -365,6 +372,20 @@ main { flex: 1; padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
   font-weight: 400;
 }
 .tl2-row--goal .tl2-score { color: var(--accent); opacity: .75; }
+
+.tl2-zone {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 
 /* ── Team Logo Background ─────────────────────────────────── */
 

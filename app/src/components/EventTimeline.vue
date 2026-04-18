@@ -19,6 +19,7 @@ const ICONS = {
   free_kick_awarded: '🔵',
   interception:      '✋',
   tackle_won:        '💪',
+  pass_failed:       '❌',
 }
 
 const LABELS = {
@@ -33,6 +34,14 @@ const LABELS = {
   free_kick_awarded: 'Free Kick',
   interception:      'Interception',
   tackle_won:        'Tackle',
+  pass_failed:       'Pass Lost',
+}
+
+const ZONE_LABELS = {
+  defensive_third:  'Def',
+  middle_third:     'Mid',
+  attacking_third:  'Att',
+  penalty_area:     'Box',
 }
 
 const FULL_WIDTH = new Set(['kickoff', 'half_time', 'full_time'])
@@ -68,6 +77,7 @@ const enriched = computed(() => {
       isFullWidth: FULL_WIDTH.has(e.event),
       icon:        ICONS[e.event] ?? null,
       label:       LABELS[e.event] ?? e.event.replace(/_/g, ' '),
+      zoneLabel:   ZONE_LABELS[e.zone] ?? null,
     }
   })
 })
@@ -99,6 +109,11 @@ function fullLabel(e) {
           'tl2-row--alt':  i % 2 === 0,
         }"
       >
+        <!-- Far-left zone badge (home events only) -->
+        <div class="tl2-zone-col">
+          <span v-if="e.isHome && e.zoneLabel" class="tl2-zone">{{ e.zoneLabel }}</span>
+        </div>
+
         <!-- Home side (right-aligned) -->
         <div class="tl2-side tl2-side--home">
           <template v-if="e.isHome">
@@ -122,6 +137,11 @@ function fullLabel(e) {
               {{ e.label }}
             </span>
           </template>
+        </div>
+
+        <!-- Far-right zone badge (away events only) -->
+        <div class="tl2-zone-col">
+          <span v-if="e.isAway && e.zoneLabel" class="tl2-zone">{{ e.zoneLabel }}</span>
         </div>
       </div>
 

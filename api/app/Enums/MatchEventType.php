@@ -32,7 +32,7 @@ enum MatchEventType: string
             self::Goal, self::ShotAttempt, self::ShotOffTarget,
             self::ShotSaved, self::ShotBlocked,
             self::FoulCommitted, self::FreeKickAwarded,
-            self::CornerWon, self::CornerTaken,
+            self::CornerWon, self::CornerTaken, self::PassFailed,
             self::Interception, self::TackleWon => true,
             default                             => false,
         };
