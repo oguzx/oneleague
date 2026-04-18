@@ -1,10 +1,12 @@
 services:
   postgres:
     image: postgres:16-alpine
+    env_file:
+      - ./api/.env
     environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE:-oneleague}
+      POSTGRES_USER: ${DB_USERNAME:-oneleague}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -12,7 +14,7 @@ services:
     networks:
       - oneleague
     healthcheck:
-      test: ["CMD-SHELL", "psql -U ${DB_USERNAME} -d ${DB_DATABASE} -c 'SELECT 1' > /dev/null 2>&1"]
+      test: ["CMD-SHELL", "psql -U $$POSTGRES_USER -d $$POSTGRES_DB -c 'SELECT 1' > /dev/null 2>&1"]
       interval: 5s
       timeout: 5s
       retries: 10
